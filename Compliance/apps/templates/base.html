@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+{% load static %}
+<html class="loading" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="Chameleon Admin is a modern Bootstrap 4 webapp &amp; admin dashboard html template with a large number of components, elegant design, clean and organized code.">
+    <meta name="keywords" content="admin template, Chameleon admin template, dashboard template, gradient admin template, responsive admin template, webapp, eCommerce dashboard, analytic dashboard">
+    <meta name="author" content="ThemeSelect">
+    <title>EY</title>
+    <link rel="apple-touch-icon" href="{% static 'app-assets/images/logo/EYLogo.gif' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'app-assets/images/logo/EYLogo.gif' %}">
+    <link href="https://fonts.googleapis.com/css?family=Muli:300,300i,400,400i,600,600i,700,700i%7CComfortaa:300,400,700" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/fonts/line-awesome/css/line-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/vendors.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/charts/chartist.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/charts/chartist-plugin-tooltip.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/file-uploaders/dropzone.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/icheck/icheck.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/icheck/custom.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/timeline/vertical-timeline.css' %}">
+
+
+
+    <!-- END: Vendor CSS-->
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
+    <!-- BEGIN: Theme CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/bootstrap-extended.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/colors.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/components.css' %}">
+
+
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/core/colors/palette-gradient.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/fonts/simple-line-icons/style.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/pages/timeline.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/plugins/file-uploaders/dropzone.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/pages/dashboard-ecommerce.css' %}">
+    <!-- END: Page CSS-->
+
+    <!-- BEGIN: Custom CSS-->
+
+    <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %}">
+    <!-- END: Custom CSS-->
+    <!-- BEGIN: Vendor CSS-->
+
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/tables/datatable/datatables.min.css' %}">
+    <!-- END: Vendor CSS-->
+ 
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/fonts/simple-line-icons/style.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/pages/chat-application.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/pages/advanced-cards.css' %}">
+        <!-- BEGIN: Theme CSS-->
+
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/fonts/feather/style.css' %}">
+    
+    <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/core/menu/menu-types/vertical-menu-modern.css' %}">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/core/menu/menu-types/horizontal-menu.css' %}">
+    <!-- END: Page CSS-->
+
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    
+    
+
+    <!--Custom CSS -->
+   
+    <style>
+        #reportTable td{
+         white-space:normal;
+       }
+   
+       .column-big{
+         width: 30%;
+       }
+   
+       .column-med{
+         width: 15%;
+       }
+   
+        .column-small{
+         width: 4%;
+       }
+   
+   
+   
+         .my-table {
+             border-collapse: collapse !important;
+             /* border-collapse: separate !important; */
+             width: 100% !important; /* Make the table fill its container */
+             margin: 90px 0 !important; /* Adjust margin to control vertical spacing */
+             height: 80% !important;
+             border: 1px solid #333 !important;
+         }
+   
+         .my-th {
+             border-collapse: collapse !important;
+             {% comment %} background-color: #6967ce !important; /* Gray background color for headers */ {% endcomment %}
+             {% comment %} border: 1px solid #151414 !important; /* Add a light gray border */ {% endcomment %}
+             {% comment %} padding: 10px !important; /* Add some padding to headers */ {% endcomment %}
+             text-align: left !important; /* Left-align header text */
+             width: 100px !important;
+             {% comment %} border-left: 1px solid #151414 !important; {% endcomment %}
+             {% comment %} border-right: 1px solid #151414 !important; {% endcomment %}
+             {% comment %} color: #000000; {% endcomment %}
+             font-family: Arial, Helvetica, sans-serif;
+             /* font-family: Arial, Helvetica, sans-serif; */
+             /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
+         }
+         .yellow-text {
+ 
+            color: #ffe600;
+         }
+           
+            .white-text {
+                color: white;
+         }
+           
+         {% comment %} .tr-class{
+             border: 1px solid #333 !important;
+         } {% endcomment %}
+         
+         {% comment %} .thead-class{
+             border-left: 1px solid #333;
+             border-right: 1px solid #333;
+   
+         } {% endcomment %}
+         .my-td {
+            position: relative;
+            text-align:center;
+            padding: 8px !important;
+            vertical-align: top !important;
+            max-width: 80px !important;
+            white-space: normal !important; /* Updated from nowrap */
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+                    }
+ 
+         
+          .editable{
+             border: 1px solid #333 !important;
+             padding: 8px !important;
+             text-align: left;
+             vertical-align: top !important;
+             max-height: 200px !important;
+             height: 25px !important;
+             max-width: 60px !important;
+             overflow: hidden !important;
+             text-overflow: ellipsis !important;
+             white-space: nowrap !important;
+             position: relative !important;
+             color: #6967ce !important;
+         }
+   
+         .text-left {
+             text-align: left !important;
+         }
+   
+    .table-responsive{
+        overflow: auto;
+    height: 26em;
+    }
+    .table-respons{
+        overflow: auto;
+    height: 18em;
+    }
+   
+   
+    </style>
+    <!-- Jquery -->
+    <script>
+        const pdfFileInput = document.getElementById('pdfFileInput');
+        const pdfPreview = document.getElementById('pdfPreview');
+
+        pdfFileInput.addEventListener('change', function() {
+            const file = pdfFileInput.files[0];
+            if (file) {
+                const fileURL = URL.createObjectURL(file);
+                pdfPreview.src = fileURL;
+            }
+        });
+    </script>
+
+   
+    
+    
+    <!-- HTMX:-->
+    {% comment %} <script src="https://unpkg.com/htmx.org@1.7.0/dist/htmx.js"></script> {% endcomment %}
+    <script src="https://unpkg.com/htmx.org@1.6.0"></script>
+    
+</head>
+<!-- END: Head-->
+<!-- BEGIN: Body-->
+
+<body class="horizontal-layout horizontal-menu 2-columns" id="content-container" data-open="hover" data-menu="horizontal-menu" data-color="bg-chartbg" data-col="2-columns">
+    <!-- BEGIN: Header-->
+    <!-- fixed-top-->
+    {% include 'navbar.html' %}
+    <!-- END: Header-->
+    
+    <div class="app-content content">
+        <div class="content-wrapper">
+            {% comment %} <div class="content-wrapper-before"></div> {% endcomment %}
+            <div class="content-body">
+                {% comment %} <div class="content-body" style="background-color: black;"> {% endcomment %}
+
+                {% block body %}
+
+                {% endblock %}
+
+            </div>
+        {% comment %} </div>
+    </div> {% endcomment %}
+    <!-- END: Content-->
+    <!-- BEGIN: Footer-->
+    {% comment %} <footer class="footer fixed-bottom footer-dark navbar-border navbar-shadow">
+        <div class="clearfix blue-grey lighten-2 text-sm-center mb-0 px-2"><span class="float-md-left d-block d-md-inline-block">2023 &copy; Copyright <a class="text-bold-800 grey darken-2" href="#" target="_blank">EY</a></span>
+            <ul class="list-inline float-md-right d-block d-md-inline-blockd-none d-lg-block mb-0">
+                <li class="list-inline-item"><a class="my-1" href="#" target="_blank">Contact us</a></li>
+            </ul>
+        </div>
+    </footer> {% endcomment %}
+    <!-- END: Footer-->
+
+    <!-- BEGIN: Vendor JS-->
+    <script src="{% static 'app-assets/vendors/js/vendors.min.js' %}" type="text/javascript"></script>
+    <!-- BEGIN Vendor JS-->
+
+    <!-- BEGIN: Page Vendor JS-->
+    
+    <script type="text/javascript" src="{% static 'app-assets/vendors/js/ui/jquery.sticky.js' %}"></script>
+    {% comment %} <script src="{% static 'app-assets/vendors/js/charts/chartist.min.js' %}" type="text/javascript"></script> {% endcomment %}
+    {% comment %} <script src="{% static 'app-assets/vendors/js/charts/chartist-plugin-tooltip.min.js' %}" type="text/javascript"></script> {% endcomment %}
+    <script src="{% static 'app-assets/vendors/js/timeline/horizontal-timeline.js' %}" type="text/javascript"></script>
+    <script src="{% static 'app-assets/vendors/js/extensions/dropzone.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'app-assets/vendors/js/forms/icheck/icheck.min.js' %}" type="text/javascript"></script>
+    <!-- END: Page Vendor JS-->
+
+    <link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/pages/dashboard-analytics.css' %}">
+
+    <!-- BEGIN: Theme JS-->
+    <script src="{% static 'app-assets/js/core/app-menu.js' %}" type="text/javascript"></script>
+    <script src="{% static 'app-assets/js/core/app.js' %}" type="text/javascript"></script>
+    <!-- END: Theme JS-->
+
+    <!-- BEGIN: Page JS-->
+    <script src="{% static 'app-assets/js/scripts/pages/dashboard-ecommerce.js' %}" type="text/javascript"></script>
+    <!-- END: Page JS-->
+    {% comment %} <script src="{% static 'app-assets/vendors/js/tables/datatable/datatables.min.js' %}" type="text/javascript"></script> {% endcomment %}
+    <!-- END: Page Vendor JS-->
+
+    <!-- BEGIN: Page JS-->
+    <script src="{% static 'app-assets/js/scripts/tables/datatables/datatable-basic.js' %}" type="text/javascript"></script>
+
+    <!-- BEGIN: Page Vendor JS-->
+    {% comment %} <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> {% endcomment %}
+
+    <script src="{% static 'app-assets/vendors/js/extensions/sweetalert2.all.js' %}" type="text/javascript"></script>
+
+    <!-- BEGIN: Page JS-->
+    <script src="{% static 'app-assets/js/scripts/pages/dashboard-analytics.js' %}" type="text/javascript"></script>
+
+    <!-- BEGIN: Page JS-->
+    <script src="{% static 'app-assets/vendors/js/forms/tags/form-field.js' %}" type="text/javascript"></script>
+    <script src="{% static 'app-assets/js/scripts/forms/custom-file-input.js' %}"></script>
+    <!-- END: Page JS-->
+
+
+    <!-- BEGIN Vendor JS-->
+
+    <!-- BEGIN: Page Vendor JS-->
+    <script type="text/javascript" src="{% static 'app-assets/vendors/js/ui/jquery.sticky.js' %}"></script>
+    <script src="https://unpkg.com/promise-polyfill" type="text/javascript"></script>
+    <script src="{% static 'app-assets/vendors/js/extensions/sweetalert2.all.js' %}" type="text/javascript"></script>
+
+    <!-- END: Page Vendor JS-->
+
+    
+    <!-- BEGIN: I FRAME-->
+    <script src="{% static 'app-assets/vendors/js/ui/prism.min.js' %}" type="text/javascript"></script>
+    <!-- END: Page JS-->
+
+
+    <!-- BEGIN: Page JS-->
+    <script src="{% static 'app-assets/js/scripts/cards/card-advanced.js' %}" type="text/javascript"></script>
+    <!-- BEGIN: Page Vendor JS-->
+
+
+
+
+
+    <!-- BEGIN: CUSTOM JS-->
+    {% comment %} <script>
+        function fetchPopupMessage(url) {
+            $.ajax({
+                url: url,  
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var points = data.message.split(/\.\s*(?=\d+\.)/);
+                    var formattedMessage = points.join('.<br><br>');
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'info',
+                        html: '<div style="text-align: left;">' + formattedMessage + '</div>',
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+   
+        $('.popup-link').on('click', function (e) {
+            e.preventDefault();
+            fetchPopupMessage($(this).attr('href'));
+        });
+    </script> {% endcomment %}
+    <script>
+        function fetchPopupMessage(url) {
+            $.ajax({
+                url: url,  
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var points = data.message.split(/\.\s*(?=\d+\.)/);
+                    var formattedMessage = points.join('.<br><br>');
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'info',
+                        html: '<div style="text-align: left;">' + formattedMessage + '</div>',
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+   
+        $('.popup-link').on('click', function (e) {
+            e.preventDefault();
+            fetchPopupMessage($(this).attr('href'));
+        });
+    </script>
+
+    <script>
+        // Function to make an AJAX request to PopUpView
+        function ftchPopupMessage(url) {
+            $.ajax({
+                url: url,  // Use the URL from the link
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // Display the success message using SweetAlert
+                    var formattedMessage = data.message.replace(/\n/g, '<br>');
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'info',
+                        html: '<div style="text-align: left;">' + formattedMessage + '</div>',
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+    
+        // Attach a click event handler to the links with class "popup-link" to trigger the AJAX request
+        $('.popuplink').on('click', function (e) {
+            e.preventDefault();  // Prevent the default link behavior
+            ftchPopupMessage($(this).attr('href'));
+        });
+    </script>  
+
+    <script>
+        $(document).ready(function() {
+            // Optional: Add an event listener for htmx:afterSwap event
+            htmx.on('htmx:afterSwap', function(event) {
+                console.log("event triggered after swap")
+                $(".chk-task").iCheck({checkboxClass:"icheckbox_square-blue",radioClass:"iradio_square-blue"});
+
+            });
+        });
+    </script>
+
+    
+</body>
+</html>

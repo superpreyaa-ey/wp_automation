@@ -1,0 +1,121 @@
+<style>
+    .glow-text {
+        color: white;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+</style>
+
+
+    <div id="content">
+        {% if current_document %}
+            <!-- Display the single document on the current page -->
+            <h6 class="card-title info bold mb-1">{{ current_document.object_list.0.name }}</h6>
+        
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Title on the left  Audit commute -->                
+                <!-- Work Paper Checkbox -->
+                
+                    {% comment %} <input type="checkbox" class="chk-task" id="issue_checkbox" name="chk[]" value="{{ current_document.object_list.0.name }}"> {% endcomment %}
+                    {% comment %} <label for="issue_checkbox">{{ current_document.object_list.0.name }}</label> {% endcomment %}
+                    {% comment %} <h6 class="card-title info bold mb-1">{{ current_document.object_list.0.name }}</h6> {% endcomment %}
+                
+                {% comment %} <div>
+                    <input type="checkbox" class="chk-task" id="work_paper_checkbox" name="chk[]" value="{{ current_document.object_list.0.id }}">
+                    <label for="work_paper_checkbox">Work Paper</label>
+                </div>
+                <!-- Issue Checkbox -->
+                <div>
+                    <input type="checkbox" class="chk-task" id="issue_checkbox" name="chk[]" value="{{ current_document.object_list.0.id }}">
+                    <label for="issue_checkbox">Issue</label>
+                </div>
+                <div>
+
+                    <button type="submit" class="btn btn-sm btn-primary box-shadow-1 round btn-min-width pull-right">Pre-Process</button>
+                </div> {% endcomment %}
+                
+            </div>
+            
+            {% if current_document.object_list.0.file_type == '.xlsx' or current_document.object_list.0.file_type == '.xls' %}
+                <div id="sheet-container">
+                    
+                    {% include "usecase_one/dattable.html" %}
+                </div>
+            {% else %}
+
+            <div class="card box-shadow-0 border-warning bg-transparent">
+                {% comment %} <li><a data-action="expand"><i class="ft-maximize"></i></a></li> {% endcomment %}
+                <iframe src="{{ current_document.object_list.0.input_path }}" class="custom-iframe" frameborder="0"></iframe>   
+            </div>    
+            {% endif %}
+
+            
+        {% else %}
+
+            <h6 class="card-title info bold mb-1">Documents Viewer</h6>
+            {% comment %} <div class="card"> {% endcomment %}
+            <div class="card box-shadow-0 border-warning bg-transparent">
+                <div class="card-header" id="heading-links">
+                    <h4 class="card-title primary bold">NO DOCUMENTS UPLOADED.</h4> 
+                    <a class="heading-elements-toggle">
+                        <i class="la la-ellipsis-v font-medium-3"></i>
+                    </a>
+
+                </div>
+                <div class="card-body">
+                    {% comment %} <h4 class="card-title">No document available to display.</h4> {% endcomment %}
+                    <p class="card-text glow-text">
+                        Step 1:  To upload your <code>document,</code>, compile all necessary data into a folder and compress it into a ZIP file. Then, follow the steps above to upload the ZIP file to our platform.
+                    </p>
+                    
+                    {% comment %} <p class="card-text">To upload your <code>document,</code>, compile all necessary data into a folder and compress it into a ZIP file. Then, follow the steps above to upload the ZIP file to our platform.</p> {% endcomment %}
+    
+                    <p class="card-text glow-text">Step 2:  Before zipping the files, ensure that all individual documents are in one of the following formats: <code>XLSX</code>, <code>XLS</code>, <code>CSV</code>, <code>PDF</code>, or <code>DOC</code>. Once verified, you can compress these into a ZIP file for upload. You can also upload individual files in these formats, provided they are not on the list of excluded file types.</p>
+                    <p class="card-text glow-text">Step 3:  Once uploaded, click the <code>"Process"</code> button to initiate the consolidation of the output. The platform will then generate a consolidated output based on the input documents provided.</p>
+                    <br>
+                </div>
+                
+            </div>
+            
+            
+        {% endif %}
+        
+        <div class="float-right my-0">
+            {% comment %} <ul class="pager">
+                <li class="previous {% if not current_document.has_previous %}disabled{% endif %}">
+                    {% if current_document.has_previous %}
+                        <a class="btn-sm" hx-get="?page={{ current_document.previous_page_number }}" hx-target="#content" hx-swap="outerHTML"><i class="ft-arrow-left"></i> Previous</a>
+                    {% else %}
+                        <a class="btn-sm disabled"><i class="ft-arrow-left"></i> Previous</a>
+                    {% endif %}
+                </li>
+                <li class="next {% if not current_document.has_next %}disabled{% endif %}">
+                    {% if current_document.has_next %}
+                        <a class="btn-sm next-button" hx-get="?page={{ current_document.next_page_number }}" hx-target="#content" hx-swap="outerHTML">Next <i class="ft-arrow-right"></i></a>
+                    {% else %}
+                        <a class="btn-sm disabled">Next <i class="ft-arrow-right"></i></a>
+                    {% endif %}
+                </li>
+            </ul> {% endcomment %}
+            <ul class="pager">
+                <li class="previous {% if not current_document.has_previous %}disabled{% endif %}">
+                    {% if current_document.has_previous %}
+                        <a class="btn-sm" hx-get="?page={{ current_document.previous_page_number }}&feature=Audit%20Report%20Drafter" hx-target="#content" hx-swap="outerHTML">
+                            <i class="ft-arrow-left"></i> Previous
+                        </a>
+                    {% else %}
+                        <a class="btn-sm disabled"><i class="ft-arrow-left"></i> Previous</a>
+                    {% endif %}
+                </li>
+                <li class="next {% if not current_document.has_next %}disabled{% endif %}">
+                    {% if current_document.has_next %}
+                        <a class="btn-sm next-button" hx-get="?page={{ current_document.next_page_number }}&feature=Audit%20Report%20Drafter" hx-target="#content" hx-swap="outerHTML">
+                            Next <i class="ft-arrow-right"></i>
+                        </a>
+                    {% else %}
+                        <a class="btn-sm disabled">Next <i class="ft-arrow-right"></i></a>
+                    {% endif %}
+                </li>
+            </ul>
+            
+        </div>
+    </div>

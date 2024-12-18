@@ -1,0 +1,125 @@
+<form method="post" action="{% url 'createaudit' %}"
+    hx-post="{% url 'createaudit' %}"
+    hx-encoding="multipart/form-data"
+    hx-trigger="submit"
+    hx-target="#approval_container"
+    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+    id="create-audit-form">
+  {% csrf_token %}
+
+  
+    <input type="hidden" name="feature" value="Audit Committee Summary Report Drafter">
+    <div class="form-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <select id="companyinput5" name="audit_year" class="form-control">
+                        <option value="none" selected="" disabled="">--Select Audit Period--</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+
+            {% if get_audit_name %}
+                <!-- Display input field with value if get_audit_name is not None -->
+                <div class="form-group">
+                    <input 
+                        type="text" 
+                        name="audit_name" 
+                        id="roundText" 
+                        class="form-control round" 
+                        value="{{ get_audit_name }}">  <!-- Set the value -->
+                </div>
+                
+            {% else %}
+                <!-- Display default input field if get_audit_name is None -->
+                <div class="form-group">
+                    <input 
+                        type="text" 
+                        name="audit_name" 
+                        id="roundText" 
+                        class="form-control round" 
+                        placeholder="Audit name">  <!-- Default placeholder -->
+                </div>
+            {% endif %}
+
+            </div>
+            
+            <div class="col-md-6">
+                <div >
+                    <span class="info">Upload File in ZIP Format</span>
+                </div>
+                
+                <div class="custom-file">
+                    
+                    <input type="file" name="file" class="custom-file-input" id="inputGroupFile01">
+                    <label class="custom-file-label" for="inputGroupFile01">Choose file.....</label>
+                </div>
+
+            </div>
+
+            <!-- Radio buttons row -->
+            <div class="col-md-6">
+                <div >
+                    <span class="info"> Select document type</span>
+                </div>
+                <br>
+                <fieldset class="form-group">
+
+                {% if is_audit %}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input mr-2 custom-radio warning" type="radio" name="fileType" id="audit" value="Audit" disabled>
+                        <label class="form-check-label" for="audit">Audit</label>
+                    </div>
+                {% else %}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input mr-2 custom-radio warning" type="radio" name="fileType" id="audit" value="Audit">
+                        <label class="form-check-label" for="audit">Audit</label>
+                    </div>
+                {% endif %}
+
+                {% if is_issue %}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check form-check-inline custom-radio" type="radio" name="fileType" id="issue" value="Issue" disabled>
+                        <label class="form-check-label" for="issue">Issue</label>
+                    </div>
+                {% else %}
+                    <div class="form-check form-check-inline">
+                        <input class="form-check form-check-inline custom-radio" type="radio" name="fileType" id="issue" value="Issue">
+                        <label class="form-check-label" for="issue">Issue</label>
+                    </div>
+                {% endif %}
+                {% include "usecase_two/spinner.html" %}
+
+                {% comment %} <div class="spinner-border text-success" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div> {% endcomment %}
+                {% comment %} <div class="spinner-border float-right text-success d-none" role="status" id="con_spinner">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                {% if get_audit_name %}
+                <div class="spinner-border float-right text-success" role="status" id="con_spinner">
+                    <span class="sr-only">Loading...</span>
+                </div> {% endcomment %}
+                </fieldset>
+            </div>
+        </div>
+         
+        
+        <div class="form-actions right">
+            <button type="button" class="btn btn-sm btn-danger box-shadow-2 round btn-min-width  mr-1">
+                <i class="ft-x"></i> Cancel
+            </button>
+            <button type="submit"id="create-audit-submit" class="btn btn-sm btn-primary box-shadow-2 round btn-min-width pull-right">
+                 Save
+            </button>
+        </div>
+        
+    </div>
+</form>
+

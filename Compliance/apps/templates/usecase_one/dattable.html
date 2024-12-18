@@ -1,0 +1,193 @@
+{% comment %} <div class="card box-shadow-1 border-warning">
+    
+    <div class="card-body pl-0 pr-0">
+        <div class="card-header">
+            <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+            <div class="heading-elements">
+                <ul class="list-inline mb-0">
+
+                    {% for sheet_name in sheet %}
+                    <li>
+                        <a href="#"
+                           class="{{ forloop.counter0|add:"1"|default:"default-class" }}"
+                           hx-get="{% url 'handle_sheet_request' %}"
+                           hx-params="feature=Audit Report Drafter&doc_name={{ current_document.object_list.0.name }}&sheet={{ sheet_name }}"
+                           hx-trigger="click"
+                           hx-target="#sheet-container">
+                           {{ sheet_name }}
+                        </a>
+                    </li>
+                    {% empty %}
+                        <li>No sheets available</li>
+                    {% endfor %}
+
+                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                   
+                </ul>
+            </div>
+        </div>
+        <div id="todays-tasks">
+            <div class="table-respons">
+                <table class="table table-padded mb-0" id="recent-buyer-table">
+                    <thead>
+                        <tr>
+                            {% if data_list %}
+                                <!-- Dynamically generate table headers -->
+                                {% for header in data_list.0.keys %}
+                                    <th class="my-th">{{ header }}</th>
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if data_list %}
+                            <!-- Dynamically generate table rows -->
+                            {% for item in data_list %}
+                                <tr>
+                                    {% for value in item.values %}
+                                        <td class="my-td">
+                                            {% if value|length > 150 %}
+                                                {{ value|slice:":150" }} ...  <a class="popup-link" href="#?applicability={{ value }}">Read More</a>
+                                            {% else %}
+                                                {{ value }}
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="X">No data available</td> <!-- Replace X with the number of columns -->
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+<div class="card box-shadow-1 border-warning">
+    <div class="card-body pl-0 pr-0">
+        <div class="card-header">
+            <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+            <div class="heading-elements">
+                <ul class="list-inline mb-0">
+                    {% comment %} <li class="nav-item">
+                        <a class="nav-link active" id="base-tab1" data-toggle="tab" aria-controls="tab1" href="#tab1" aria-expanded="true">Home</a>
+                    </li> {% endcomment %}
+                    {% comment %} <li class="nav-item"> 
+                        <a class="nav-link" id="base-tab2" data-toggle="tab" aria-controls="tab2" href="#tab2" aria-expanded="false">Profile</a>
+                    </li> {% endcomment %}
+ 
+                    {{ current_sheet }}
+                    {% comment %} <li class="nav-item">
+                        <a href="#"
+                           class="nav-link {% if sheet_name == current_sheet %}active{% endif %}"
+                           data-toggle="tab"
+                           aria-controls="{{ sheet_name|slugify }}"
+                           aria-expanded="{{ sheet_name == current_sheet|yesno:"true,false" }}"
+                           hx-get="{% url 'handle_sheet_request' %}"
+                           hx-vals='{"feature": "Audit Report Drafter", "doc_name": "{{ current_document.object_list.0.name }}", "sheet": "{{ sheet_name }}"}'
+                           hx-trigger="click"
+                           hx-target="#sheet-container">
+                            {{ sheet_name }}
+                        </a>
+                    </li> {% endcomment %}
+                    {% for sheet_name in sheet %}
+              
+                        <li class="nav-link  id="base-tab1" data-toggle="tab" aria-controls="tab1" href="#tab1" aria-expanded="false"">
+                                
+                            <a href="#"
+                            class="{{ forloop.counter0|add:"1"|default:"default-class" }}"
+                            hx-get="{% url 'handle_sheet_request' %}"
+                            hx-vals='{"feature": "Audit Report Drafter", "doc_name": "{{ current_document.object_list.0.name }}", "sheet": "{{ sheet_name }}"}'
+                            hx-trigger="click"
+                            hx-target="#sheet-container">
+                            {{ sheet_name }}
+                            </a>
+                        </li>
+                        
+                    {% empty %}
+                        <li>No sheets available</li>
+                    {% endfor %}
+                    <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="todays-tasks">
+            <div class="table-respons">
+                <table class="table table-padded mb-0" id="recent-buyer-table">
+                    <thead>
+                        <tr>
+                            {% if data_list %}
+                                {% for header in data_list.0.keys %}
+                                    <th class="my-th">{{ header }}</th>
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if data_list %}
+                            {% for item in data_list %}
+                                <tr>
+                                    {% for value in item.values %}
+                                        <td class="my-td">
+                                            {% if value|length > 150 %}
+                                                {{ value|slice:":150" }} ...  <a class="popup-link" href="#?applicability={{ value }}">Read More</a>
+                                            {% else %}
+                                                {{ value }}
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="X">No data available</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set initial active state based on URL or other conditions
+        const currentSheet = "{{ current_sheet|default:'' }}";  // Pass current sheet to template
+        if (currentSheet) {
+            document.querySelector(`.sheet-link[data-sheet-name="${currentSheet}"]`).classList.add('active');
+        }
+    
+        // Add click event listener to all sheet links
+        document.querySelectorAll('.sheet-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                // Remove active class from all links
+                document.querySelectorAll('.sheet-link').forEach(function(link) {
+                    link.classList.remove('active');
+                });
+    
+                // Add active class to the clicked link
+                this.classList.add('active');
+            });
+        });
+    });
+    </script>
+
+
+                        {% comment %} <li>
+                            <a href="#" 
+                            class="{{ forloop.counter0|add:"1"|default:"default-class" }}"
+                            hx-post="{% url 'handle_sheet_request' %}"  
+                            hx-vals='{"feature": "Audit Report Drafter", "doc_name": "{{ current_document.object_list.0.name }}", "sheet": "{{ sheet_name }}"}'
+                            hx-trigger="click"
+                            hx-target="#sheet-container">
+                            {{ sheet_name }}
+                            </a>
+                        </li> {% endcomment %}
+                    {% comment %} <li><a href="#" class="success">Sheet 1</a></li>
+                    <li><a href="#" class="danger">Sheet 2</a></li>
+                    <li><a href="#" class="info">Sheet 3</a></li> {% endcomment %}

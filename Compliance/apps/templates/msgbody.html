@@ -1,0 +1,79 @@
+{% load static %}
+
+
+{% for message in messages %}
+  {% if message.tags == 'info' %}
+    <!-- sweetalert js -->
+    <script>
+      var m = "{{ message }}";
+      var redirectURL = "{% url 'index' %}";  // Render the URL using Django's template engine   
+      Swal.fire({
+        title: 'Popup1 for Bank',
+        text: m,
+        confirmButtonColor: '#4CAF50',
+        allowEscapeKey: false,
+        showCancelButton: true,
+        confirmButtonText: 'Redirect',
+        cancelButtonText: 'Continue',
+
+      }).then((result) => {
+        console.log("result.isConfirmed :"+result.isConfirmed);
+        if (result.isConfirmed) {
+          console.log("Redirect button clicked");
+          window.location.href = redirectURL;  // Use the rendered URL
+          // Trigger the HTMX request to update the content
+          htmx.trigger('#dynamic-content-div', 'get', {});
+          
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          // Handle the "Continue" action here
+          htmx.trigger('#film-list', 'get', {});
+          
+        }
+      });
+    </script>
+    
+  {% elif message.tags == 'success' %}  
+    <script>
+      var m = "{{ message }}";
+      var redirectURL = "{% url 'index' %}";  // Render the URL using Django's template engine   
+      Swal.fire({
+        title: m,
+        text: 'Popup2 for Bank',
+        confirmButtonColor: '#4CAF50',
+        allowEscapeKey: false,
+        showCancelButton: true,
+        confirmButtonText: 'Redirect',
+        cancelButtonText: 'Continue',
+
+      }).then((result) => {
+        console.log("result.isConfirmed :"+result.isConfirmed);
+        if (result.isConfirmed) {
+          console.log("Redirect button clicked");
+          window.location.href = redirectURL;  // Use the rendered URL
+          // Trigger the HTMX request to update the content
+          htmx.trigger('#dynamic-content-div', 'get', {});
+          
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          // Handle the "Continue" action here
+        }
+      });
+    </script>
+  {% else %}
+
+    <script>
+      var m = "{{ message }}";
+      Swal.fire({
+        icon: 'error',
+        iconHtml: '<i class="basic-alert"></i>',
+        text: m,
+        confirmButtonColor:'#4CAF50',  
+        color: '#000',
+        background: 'rgba(255, 255, 255, 0.7)',
+        allowEscapeKey: false,
+        showClass: {
+          popup: 'my-icon'                     // disable popup animation css
+        },
+      });
+    </script>
+  {% endif %}
+{% endfor %}

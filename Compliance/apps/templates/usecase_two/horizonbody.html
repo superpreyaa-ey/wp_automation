@@ -1,0 +1,116 @@
+
+{% load sweetify %}
+{% sweetify %} 
+{% load static %}
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/file-uploaders/dropzone.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/icheck/icheck.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/icheck/custom.css' %}">
+
+
+
+
+<link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/plugins/file-uploaders/dropzone.css' %}">
+
+
+
+<!-- END: Page CSS-->
+
+
+<div class="row">
+
+    <div class="col-md-10 col-lg-6">  
+        <div class=" d-flex justify-content-between align-items-center">
+        
+            <!-- Title on the left  Audit commute -->
+            {% comment %} <h6 class="card-title warning bold mb-1">Audit Committee Summary Report Drafter</h6> {% endcomment %}
+            
+            <h6 class="card-title warning bold mb-1">Digitized Audit Committee Report</h6>
+        </div> 
+        
+        <div class="card box-shadow-1 border-warning">
+
+            <div class="card-header ">
+ 
+                <h4 class="card-title primary bold">CONFIGURATION</h4>        
+                <div class="card-body">
+                    {% include "usecase_two/hxform.html"%}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-10 col-lg-6">
+        {% include "usecase_two/iframe.html" %}
+
+    </div>
+
+    <br>
+</div> 
+
+<div class="row">
+
+    <div class="col-md-10 col-lg-12">
+        {% include "usecase_two/Audit_trail.html" %}
+
+    </div>
+            
+</div>
+
+ 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var createAuditForm = document.getElementById('create-audit-form'); // Add an ID to your form for this to work
+        console.log(">>>>>>>>>>>>>>>horizon body")
+        createAuditForm.addEventListener('submit', function(event) {
+            var fileInput = document.getElementById('inputGroupFile01');
+            if (fileInput && fileInput.required && fileInput.offsetParent === null) {
+                // If the input is required and not visible, prevent form submission and display an error or make the input visible
+                event.preventDefault();
+                alert('Please attach the required file.');
+                // Optionally, make the input visible
+                // fileInput.style.display = 'block';
+            }
+        });
+    });
+</script>
+
+<!-- JavaScript to handle the progress bar -->
+<script>
+function startDummyProgress() {
+    var elem = document.getElementById("progressBar");
+    var width = 0;
+    var id = setInterval(frame, 1900); // Update every 300ms
+
+    function frame() {
+        if (width >= 100) {
+            clearInterval(id);
+            // Optionally, you can redirect or perform another action after the progress bar completes
+            // window.location.href = "/some/redirect/url";
+        } else {
+            width++;
+            elem.style.width = width + '%';
+            elem.textContent = width + '%';
+        }
+    }
+}
+
+function showProgressBar() {
+    document.getElementById("progressBarContainer").style.display = "block";
+    startDummyProgress();
+}
+</script>
+
+
+
+
+<script src="{% static 'app-assets/vendors/js/forms/icheck/icheck.min.js' %}" type="text/javascript"></script>
+<!-- END: Page Vendor JS-->
+
+<!-- BEGIN: Page JS-->
+<script src="{% static 'app-assets/vendors/js/forms/tags/form-field.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/js/scripts/forms/custom-file-input.js' %}"></script>
+<!-- END: Page JS-->

@@ -1,0 +1,90 @@
+
+
+<div class="spinner-container">
+    <!-- Warning Spinner -->
+    <div class="spinner-border float-right text-warning d-none" role="status" id="warning_spinner">
+        <span class="sr-only">Loading...</span>
+    </div>
+
+    <!-- Success Spinner -->
+    <div class="spinner-border float-right text-success d-none" role="status" id="success_spinner">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+{% comment %} <div id="wait_message" class="d-none">Please wait, this may take some time...</div> {% endcomment %}
+{% comment %} <script>
+
+    var form = document.getElementById('create-audit-form');
+    var warningSpinner = document.getElementById('warning_spinner');
+    var successSpinner = document.getElementById('success_spinner');
+    var auditRadio = document.getElementById('audit');
+    var issueRadio = document.getElementById('issue');
+
+    function showSpinner(spinner) {
+        spinner.classList.remove('d-none');
+    }
+
+    function hideSpinner(spinner) {
+        spinner.classList.add('d-none');
+    }
+
+    form.addEventListener('htmx:beforeRequest', function() {
+        // Show the appropriate spinner when the request starts
+        if (auditRadio.checked) {
+            showSpinner(warningSpinner);
+            hideSpinner(successSpinner);
+        } else if (issueRadio.checked) {
+            showSpinner(successSpinner);
+            hideSpinner(warningSpinner);
+        }
+    });
+
+    form.addEventListener('htmx:afterRequest', function() {
+        // Hide both spinners when the request ends
+        hideSpinner(warningSpinner);
+        hideSpinner(successSpinner);
+    });
+
+
+</script>    {% endcomment %}
+
+<script>
+    var form = document.getElementById('create-audit-form');
+    var warningSpinner = document.getElementById('warning_spinner');
+    var successSpinner = document.getElementById('success_spinner');
+    var waitMessage = document.getElementById('wait_message');
+    var auditRadio = document.getElementById('audit');
+    var issueRadio = document.getElementById('issue');
+
+    function showSpinner(spinner) {
+        spinner.classList.remove('d-none');
+        waitMessage.classList.remove('d-none'); // Show the wait message
+    }
+
+    function hideSpinner(spinner) {
+        spinner.classList.add('d-none');
+    }
+
+    form.addEventListener('htmx:beforeRequest', function() {
+        // Show the appropriate spinner and message when the request starts
+        if (auditRadio.checked) {
+            showSpinner(warningSpinner);
+            hideSpinner(successSpinner);
+        } else if (issueRadio.checked) {
+            showSpinner(successSpinner);
+            hideSpinner(warningSpinner);
+        }
+    });
+
+    form.addEventListener('htmx:afterRequest', function() {
+        // Hide both spinners and the message when the request ends
+        hideSpinner(warningSpinner);
+        hideSpinner(successSpinner);
+        waitMessage.classList.add('d-none'); // Hide the wait message
+    });
+</script>
+
+
+
+
+
