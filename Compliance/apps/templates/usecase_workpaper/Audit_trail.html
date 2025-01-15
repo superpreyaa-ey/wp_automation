@@ -54,6 +54,7 @@
                                 <th class="m-0">AUDIT NAME</th>
                                 <th>YEAR</th>
                                 <th>MEETING TYPE</th>
+                                <th>CONTROL NAME</th>
                                 {% comment %} <th><i class="ft-folder blue-grey font-medium-5 ml-1"></i></th> {% endcomment %}
                                 <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status</th>
                                 {% comment %} Audit Report Generate 2 Audit Report Pending 3 Audit Report Failed{% endcomment %}
@@ -93,6 +94,11 @@
                                     </td>
                                     <td class="text-left" id="meeting_type">
                                         {{ audit.attachedfolder_set.get.meeting_type }}
+                                        
+                                    </td>
+
+                                    <td class="text-left" id="meeting_type">
+                                        {{ audit.attachedfolder_set.get.control_name }}
                                         
                                     </td>
                                     

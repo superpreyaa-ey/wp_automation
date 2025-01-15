@@ -33,7 +33,7 @@ from django.db import IntegrityError
 
 
 
-def audit_attached_folder(audit, entityname, extracted_folder_path, flag):
+def audit_attached_folder(audit, entityname, extracted_folder_path, flag, control_name):
     """
     Create or update an AttachedFolder instance based on a flag.
 
@@ -48,6 +48,7 @@ def audit_attached_folder(audit, entityname, extracted_folder_path, flag):
             defaults = {'folder_name': entityname}  # Set the folder_name in defaults
             if flag:  # Use quotes around A1
                 defaults['meeting_type'] = flag
+                defaults['control_name'] = control_name
             # elif flag == I1:  # Use quotes around I1
             #     defaults['is_issue'] = flag
 
@@ -77,10 +78,13 @@ def createauditwp(request):
         feature = request.POST.get('feature', None)
         flag = request.POST.get('meeting_type', None)
         files = request.FILES.getlist('file')
+        control_name = request.POST.get('control_name')
         
         print(f"Flag respnse:{flag}")
         # files = request.FILES.getlist('folder')
         print(f"Feature Requested >>>>>>>>>>>>>>>>> : {feature}")
+        print(f"Control Name >>>>>>>>>>>>>>>>> : {control_name}")
+        
         # print("GET LENGTH >>>>>>>>>>>>>>>>>>>>>>>>.",len(request.POST))  # Add this line to debug
         # print("FILES Data:", request.FILES)
         # print("FILES :", files)
@@ -129,21 +133,29 @@ def createauditwp(request):
         get_audit_year = audit.audit_year
         for file in files:
             entityname = file.name
-            handle_uploaded_file(file, entityname, audit,flag,feature)
-            extracted_folder_path = unzip_files(entityname, audit,flag,feature)
+            handle_uploaded_file(file, entityname, audit,flag,feature,control_name)
+            extracted_folder_path = unzip_files(entityname, audit,flag,feature,control_name)
 
             print("inside workpaper automation zip======================2=================",extracted_folder_path)
             
             if extracted_folder_path: 
                 print("inside if folder path===============")
-                attached_folder, attached_folder_created = audit_attached_folder(audit,entityname, extracted_folder_path, flag)
+                attached_folder, attached_folder_created = audit_attached_folder(audit,entityname, extracted_folder_path, flag, control_name)
                 script_folder_path = os.path.join('static', 'media', 'project_files', 'audio_script_files')
                 extracted_folder_path = script_folder_path
                 print("inside script_folder_path======================2=================",extracted_folder_path)
-                print("inside script_folder_path======================3=================",extracted_folder_path,audit,preprocess_path,flag)
-                create_document_entries(extracted_folder_path, audit,preprocess_path,flag) 
+                print("inside script_folder_path======================3=================",extracted_folder_path,audit,preprocess_path,flag,control_name)
+                create_document_entries(extracted_folder_path, audit,preprocess_path,flag,control_name) 
 
                 time.sleep(20)
+
+        # added for meeting type and control name to show up after save
+        # attached_folders = AttachedFolder.objects.filter(audit_id=latest_audit)
+        
+        print("inside workpaper automation======================new1=================",attached_folder)
+        get_meeting_type = attached_folder.meeting_type 
+        get_control_name = attached_folder.control_name
+
         page = request.GET.get('page', 1)
         print("feature name==========",feature)
         if feature == None:
@@ -155,9 +167,9 @@ def createauditwp(request):
         print("inside workpaper automation======================1=================",audits)
 
             
-        isaudit,isissue,meeting_type,first_attached_folder,latest_audit, documents_obj = get_latest_audit_and_documents(request,feature)
+        isaudit,isissue,meeting_type,control_name,first_attached_folder,latest_audit, documents_obj = get_latest_audit_and_documents(request,feature)
 
-        print("inside workpaper automation======================2=================",isaudit,isissue,meeting_type,first_attached_folder,latest_audit, documents_obj)
+        print("inside workpaper automation======================2=================",isaudit,isissue,meeting_type,control_name,first_attached_folder,latest_audit, documents_obj)
 
         # if documents_obj !=[]: #first_attached_folder.folder_name
         paginator = Paginator(documents_obj, 1)  # Show 1 document per page
@@ -216,6 +228,9 @@ def createauditwp(request):
         'folder_name':first_attached_folder.folder_name,
         'get_audit_name':get_audit_name,
         'get_audit_year':get_audit_year,
+
+        'get_meeting_type':get_meeting_type,
+        'get_control_name':get_control_name,
         }
         if request.headers.get('HX-Request'):
             #
@@ -505,7 +520,7 @@ def approvalwp(request):
         s1 = 'Workpaper Report'
         feature = 'Workpaper Automation'
 
-        isaudit,isissue,meeting_type,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
+        isaudit,isissue,meeting_type,control_name,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
         print("documents=============",documents)
 
         if documents:

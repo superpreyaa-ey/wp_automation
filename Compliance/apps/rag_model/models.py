@@ -47,6 +47,7 @@ class AttachedFolder(models.Model):
     is_issue = models.CharField(default=None,max_length=50,null=True,blank=True)    
     uploaded_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     meeting_type = models.CharField(default=None,max_length=255,null=True,blank=True) 
+    control_name = models.CharField(default=None,max_length=255,null=True,blank=True)
     # pre_process = models.TextField(default=None,null=True,blank=True)
 
     def __str__(self):

@@ -87,11 +87,13 @@ def get_latest_audit_and_documents(request,feature):
             is_audit = None
             is_issue = None
             meeting_type = first_attached_folder.meeting_type
+            control_name = first_attached_folder.control_name
         else:
             is_audit = None
             is_issue = None
             first_attached_folder = None
             meeting_type = None
+            control_name = None
 
         documents = latest_audit.documents.all() 
     except Audit.DoesNotExist:
@@ -102,9 +104,11 @@ def get_latest_audit_and_documents(request,feature):
         is_issue = None
         first_attached_folder = None
         meeting_type = None
+        control_name = None
 
+    print("control name=============================",control_name)
     # You can now return these objects, use them to render a template, or pass them to the context
-    return is_audit,is_issue,meeting_type,first_attached_folder,latest_audit, documents
+    return is_audit,is_issue,meeting_type,control_name,first_attached_folder,latest_audit, documents
 
 import os
 import pandas as pd
@@ -138,11 +142,12 @@ def index(request):
                 'is_issue': folder.is_issue,
                 'is_audit': folder.is_audit,
                 'meeting_type': folder.meeting_type,
+                'control_name': folder.control_name,
             })
 
 
     # latest_audit, documents = get_latest_audit_and_documents(request,feature)
-    isaudit,isissue,meeting_type,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
+    isaudit,isissue,meeting_type,control_name,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
     # example = documents[0].input_path
     if documents:
         # Set up pagination for documents

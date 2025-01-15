@@ -91,7 +91,7 @@ def convert_text_to_pdf(text_file, pdf_file):
 
 
     
-def handle_uploaded_file(f, filename, audit,flag,feature):
+def handle_uploaded_file(f, filename, audit,flag,feature,control_name):
     # Define the destination directory path
     # audit.audit_name + '-' + str(audit.audit_year)
     if flag == None or flag == 1:
@@ -111,7 +111,7 @@ def handle_uploaded_file(f, filename, audit,flag,feature):
         for chunk in f.chunks():
             destination.write(chunk)
 
-def unzip_files(filename, audit,flag,feature):
+def unzip_files(filename, audit,flag,feature,control_name):
     # Final Report Email - Retirement Strategies - Legacy Group Annuity SegmentBlock.zip'\
     extracted_folder_path = None
 
@@ -188,9 +188,9 @@ from django.core.exceptions import ObjectDoesNotExist
 # ... other necessary imports ...
 from django.db import transaction
 
-def create_document_entries(extracted_folder_path, audit, preprocess_path,flag):
+def create_document_entries(extracted_folder_path, audit, preprocess_path,flag,control_name):
     try:
-        print("inside create_document_entries======================1=================",extracted_folder_path,audit,preprocess_path,flag)
+        print("inside create_document_entries======================1=================",extracted_folder_path,audit,preprocess_path,flag,control_name)
         # Fetch the audit object from the database using the provided audit_id
         # audit = Audit.objects.get(id=audit_id)
 
