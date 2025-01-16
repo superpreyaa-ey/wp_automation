@@ -81,22 +81,18 @@ def createauditwp(request):
         control_name = request.POST.get('control_name')
         
         print(f"Flag respnse:{flag}")
-        # files = request.FILES.getlist('folder')
         print(f"Feature Requested >>>>>>>>>>>>>>>>> : {feature}")
         print(f"Control Name >>>>>>>>>>>>>>>>> : {control_name}")
         
-        # print("GET LENGTH >>>>>>>>>>>>>>>>>>>>>>>>.",len(request.POST))  # Add this line to debug
-        # print("FILES Data:", request.FILES)
-        # print("FILES :", files)
         request_user = str(request.user)
         # Create folder path
-        # 
+        
         folder_name = f"{audit_name}-{audit_year}"
         folder_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature, folder_name)
         preprocess_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature, folder_name,'Pre_Process')
         final_output_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature, folder_name,'Process_Output')
         # output_path = audit.out_putpath 
-
+        
         os.makedirs(folder_path, exist_ok=True)
         os.makedirs(preprocess_path, exist_ok=True)
         os.makedirs(final_output_path, exist_ok=True)
@@ -132,27 +128,23 @@ def createauditwp(request):
         get_audit_name = audit.audit_name 
         get_audit_year = audit.audit_year
         for file in files:
+
             entityname = file.name
             handle_uploaded_file(file, entityname, audit,flag,feature,control_name)
             extracted_folder_path = unzip_files(entityname, audit,flag,feature,control_name)
-
-            print("inside workpaper automation zip======================2=================",extracted_folder_path)
             
             if extracted_folder_path: 
                 print("inside if folder path===============")
                 attached_folder, attached_folder_created = audit_attached_folder(audit,entityname, extracted_folder_path, flag, control_name)
-                script_folder_path = os.path.join('static', 'media', 'project_files', 'audio_script_files')
-                extracted_folder_path = script_folder_path
-                print("inside script_folder_path======================2=================",extracted_folder_path)
-                print("inside script_folder_path======================3=================",extracted_folder_path,audit,preprocess_path,flag,control_name)
+                # script_folder_path = os.path.join('static', 'media', 'project_files', 'audio_script_files')
+                # extracted_folder_path = script_folder_path
                 create_document_entries(extracted_folder_path, audit,preprocess_path,flag,control_name) 
 
-                time.sleep(20)
+                # time.sleep(20)
 
         # added for meeting type and control name to show up after save
         # attached_folders = AttachedFolder.objects.filter(audit_id=latest_audit)
-        
-        print("inside workpaper automation======================new1=================",attached_folder)
+
         get_meeting_type = attached_folder.meeting_type 
         get_control_name = attached_folder.control_name
 

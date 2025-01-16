@@ -60,7 +60,7 @@
             <ul class="pager">
                 <li class="previous {% if not current_document.has_previous %}disabled{% endif %}">
                     {% if current_document.has_previous %}
-                        <a class="btn-sm" hx-get="?page={{ current_document.previous_page_number }}&feature=Audit%20Committee%20Summary%20Report%20Drafter" hx-target="#content" hx-swap="outerHTML">
+                        <a class="btn-sm" hx-get="?page={{ current_document.previous_page_number }}&feature=Workpaper%20Automation" hx-target="#content" hx-swap="outerHTML">
                             <i class="ft-arrow-left"></i> Previous
                         </a>                        
                     {% else %}
@@ -69,7 +69,7 @@
                 </li>
                 <li class="next {% if not current_document.has_next %}disabled{% endif %}">
                     {% if current_document.has_next %}
-                        <a class="btn-sm next-button" hx-get="?page={{ current_document.next_page_number }}&feature=Audit%20Committee%20Summary%20Report%20Drafter" hx-target="#content" hx-swap="outerHTML">
+                        <a class="btn-sm next-button" hx-get="?page={{ current_document.next_page_number }}&feature=Workpaper%20Automation" hx-target="#content" hx-swap="outerHTML">
                             Next <i class="ft-arrow-right"></i>
                         </a>
                     {% else %}

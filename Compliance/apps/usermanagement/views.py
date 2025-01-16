@@ -128,6 +128,7 @@ def index(request):
     print(f"Feature Requested : {feature}")
     sheet_names = None
     current_sheet = None
+    
     audits = Audit.objects.filter(created_by = request.user,feature_request=feature,is_active=True).order_by('-id') 
     print("audits========",audits)
     for audit in audits:
@@ -176,7 +177,7 @@ def index(request):
         doc_id = current_document.object_list[0].id
         get_base_path = os.getcwd() + file_path
         absolute_file_path = os.path.abspath(get_base_path)
-        
+
         if file_type in ['.xls', '.xlsx']:
             # import pdb; pdb.set_trace()
             latest_audit.current_docid = doc_id
@@ -199,7 +200,6 @@ def index(request):
         df = None
         data_list = None
         pass
-    # import pdb; pdb.set_trace()
     if isaudit:
         isaudit =True
     else:
@@ -231,7 +231,7 @@ def index(request):
 
         return render(request, template_name, context)
     elif feature == 'Audit Committee Summary Report Drafter':
-        
+        print(f"File object of feature {feature}*********************** ",current_document.object_list[0].id)
         if 'HX-Request' in request.headers:
             # Render only the partial content for htmx request
             template_name = 'usecase_two/iframe.html'
@@ -255,7 +255,7 @@ def index(request):
 
     elif feature == 'Workpaper Automation':
         print("inside Workpaper Automation if=========1==========")
-        
+        print(f"File object of feature {feature}*********************** ",current_document.object_list[0].id)
         if 'HX-Request' in request.headers:
             print("inside Workpaper Automation if========2===========")
             # Render only the partial content for htmx request

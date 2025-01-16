@@ -91,7 +91,7 @@ def convert_text_to_pdf(text_file, pdf_file):
 
 
     
-def handle_uploaded_file(f, filename, audit,flag,feature,control_name):
+def handle_uploaded_file(f, filename, audit,flag,feature,control_name= None):
     # Define the destination directory path
     # audit.audit_name + '-' + str(audit.audit_year)
     if flag == None or flag == 1:
@@ -101,6 +101,8 @@ def handle_uploaded_file(f, filename, audit,flag,feature,control_name):
         dest_dir = os.path.join('static','media','project_files','audit_check_files',str(audit.created_by) ,feature, audit.audit_name + '-' + str(audit.audit_year),flag)
     elif flag == I1:
         dest_dir = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature, audit.audit_name + '-' + str(audit.audit_year),flag)
+    elif control_name !=None:
+        dest_dir = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature, audit.audit_name + '-' + str(audit.audit_year),control_name)
     else:
         dest_dir = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature, audit.audit_name + '-' + str(audit.audit_year),flag)
 
@@ -111,7 +113,7 @@ def handle_uploaded_file(f, filename, audit,flag,feature,control_name):
         for chunk in f.chunks():
             destination.write(chunk)
 
-def unzip_files(filename, audit,flag,feature,control_name):
+def unzip_files(filename, audit,flag,feature,control_name=None):
     # Final Report Email - Retirement Strategies - Legacy Group Annuity SegmentBlock.zip'\
     extracted_folder_path = None
 
@@ -128,6 +130,10 @@ def unzip_files(filename, audit,flag,feature,control_name):
     elif flag == I1:
         extracted_folder_path = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature,audit.audit_name + '-' + str(audit.audit_year),I1,filename.split('.')[0])
         with zipfile.ZipFile(os.path.join('static','media','project_files','audit_check_files',str(audit.created_by) ,feature,audit.audit_name + '-' + str(audit.audit_year),I1,filename), 'r') as zip_ref:
+            zip_ref.extractall(extracted_folder_path)
+    elif control_name != None:
+        extracted_folder_path = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature,audit.audit_name + '-' + str(audit.audit_year),control_name,filename.split('.')[0])
+        with zipfile.ZipFile(os.path.join('static','media','project_files','audit_check_files',str(audit.created_by) ,feature,audit.audit_name + '-' + str(audit.audit_year),control_name,filename), 'r') as zip_ref:
             zip_ref.extractall(extracted_folder_path)
     else:
         extracted_folder_path = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature,audit.audit_name + '-' + str(audit.audit_year),flag,filename.split('.')[0])
@@ -191,8 +197,6 @@ from django.db import transaction
 def create_document_entries(extracted_folder_path, audit, preprocess_path,flag,control_name):
     try:
         print("inside create_document_entries======================1=================",extracted_folder_path,audit,preprocess_path,flag,control_name)
-        # Fetch the audit object from the database using the provided audit_id
-        # audit = Audit.objects.get(id=audit_id)
 
         # Get the total number of files for the progress bar
         total_files = sum([len(files) for r, d, files in os.walk(extracted_folder_path)])
@@ -234,7 +238,7 @@ def create_document_entries(extracted_folder_path, audit, preprocess_path,flag,c
                         else:
                             print(f"File does not exist: {file_path}")
                     
-                    elif file_extension == '.txt' or file_extension == '.pptx':
+                    elif file_extension.lower()  == '.txt' or file_extension.lower()  == '.pptx':
                         
                         pdf_file_name = os.path.splitext(file)[0] + '.pdf'
                         pdf_file_path = os.path.join(root, pdf_file_name)
@@ -256,11 +260,11 @@ def create_document_entries(extracted_folder_path, audit, preprocess_path,flag,c
                                 print("Conversion failed.")
                         else:
                             print(f"File does not exist: {file_path}")
-                    if file_extension.lower() == '.pdf':
+   
+                    if file_extension.lower() == '.pdf' or file_extension.lower()  == '.wav' or file_extension.lower()  == '.mp3' or file_extension.lower()  == '.wma':
                         
                         shutil.copy(file_path, preprocess_path)
                         print(f"File {file_path} copied to {preprocess_path}")
-                    # elif file_extension.lower() == '.'
                     else:
                         print(f"File {file_path} does not have a .pdf extension.")
                         
@@ -485,7 +489,6 @@ def create_audit(request):
     except EmptyPage:
         current_document = paginator.page(paginator.num_pages)
 
-    # import pdb; pdb.set_trace()
     file_type = current_document.object_list[0].file_type
     print(f"file path {file_type}")
     file_path = current_document.object_list[0].input_path
