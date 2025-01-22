@@ -82,7 +82,7 @@
                                     <td class="text-truncate border-0">
                                         <input type="checkbox" class="chk-task" name="check[]" value="{{audit.id}}">
                                     </td>
-                                    <td class="text-truncate border-0">
+                                    <td>
                                         <!-- Trigger for Modal --> 
                                         <a href="#" data-toggle="modal" data-target="#detailsModal{{ audit.id }}">
                                             {{ audit.audit_name }}
@@ -138,32 +138,6 @@
                                     </td>
                                     
                                     
-                                    
-                                    {% comment %} <td class="text-left" id="meeting_type">
-                                        {% for folder in audit.attachedfolder_set.all %}
-                                            {{ folder.meeting_type }}{% if not forloop.last %} / {% endif %}
-                                        {% endfor %}
-                                    </td>
-                                    <td class="text-left" id="control_name">
-                                        {% for folder in audit.attachedfolder_set.all %}
-                                            {{ folder.control_name }}{% if not forloop.last %}, {% endif %}
-                                        {% endfor %}
-                                    </td> {% endcomment %}
-
-                                    {% comment %} {% for folder in audit.attachedfolder_set.all %}
-                                    <td class="text-left" id="meeting_type">{{ folder.meeting_type }}</td>
-                                    <td class="text-left" id="control_name">{{ folder.control_name }}</td>
-                                    {% endfor %} {% endcomment %}
-                                    {% comment %} <td class="text-left" id="meeting_type">
-
-                                        {{ audit.attachedfolder_set.get.meeting_type }}
-                                        
-                                    </td>
-
-                                    <td class="text-left" id="meeting_type">
-                                        {{ audit.attachedfolder_set.get.control_name }}
-                                        
-                                    </td> {% endcomment %}
 
 
                                     <td class="text-left" id="audit_status_{{audit.id}}">
@@ -186,11 +160,11 @@
                                         </div> 
                                     </td> 
                                     
-                                    <td class="text-truncate border-0">
+                                    <td>
                         
                                         <a href="{% url 'download_excel_wp' audit.id %}"><i class="ft-arrow-down blue-primary lighten-2 font-medium-5 ml-1"></i></a>
                                     </td>
-                                    <td class="text-truncate border-0">
+                                    <td>
                                         <a href="#" data-toggle="modal" data-target="#warning{{audit.id}}">
                                             {% comment %}  <a href="#"  hx-target="#approval-container" hx-swap="outerHTML">  {% endcomment %}
                                             <i class="ft-eye blue-primary lighten-2 font-medium-5 ml-1"></i>
@@ -224,8 +198,9 @@
                                         <i class="blue-grey font-medium-2 ml-0">Done</i>
                                     </td>
                                     <td style="font-size: smaller;">
-                                        <i class="blue-grey font-medium-2 ml-0">{{ audit.uploaded_at }}</i>
+                                        {{ audit.uploaded_at }}
                                     </td>
+             
                                     <td>
                                         <div class="media">
                                             

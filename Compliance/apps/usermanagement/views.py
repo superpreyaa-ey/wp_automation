@@ -50,25 +50,35 @@ def logoutUser(request):
     # Redirect to a desired page after logout (e.g., home page)
     return redirect('login')
 
+# Reader >>>>>>>>>>>>>>>>>>>>>>>.>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+def report_reader(file_type, file_path,doc_id= None,rows_cnt=None):
+    get_base_path = os.getcwd() + file_path
+    absolute_file_path = os.path.abspath(get_base_path)
+
+    if file_type in ['.xls', '.xlsx']:
+        print('Extracting data from Excel file...')
+        # Read up to 20 rows from the Excel file
+        df = pd.read_excel(absolute_file_path, nrows=20)
+        excel_file = pd.ExcelFile(absolute_file_path)
+        # Get the sheet names
+        sheet_names = excel_file.sheet_names
+        data_list = df.to_dict(orient='records')
+    elif file_type in ['.csv', '.CSV']:
+        print('Extracting data from CSV file...')
+        # Read up to 20 rows from the CSV file
+        df = pd.read_csv(absolute_file_path, nrows=20)
+        data_list = df.to_dict(orient='records')
+        sheet_names = None
+    else:
+        df = None
+        data_list = None
+        sheet_names = None
+
+    return sheet_names, data_list
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TABLE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-# def get_latest_audit_and_documents(request,feature):
-#     try:
-#         # Retrieve the latest active Audit object created by the current user
-        
-#         latest_audit = Audit.objects.filter(created_by=request.user,feature_request=feature,is_active=True).latest('created_at')
-#         print(latest_audit)
-#         # Retrieve all related Document objects for the latest Audit
 
-#         documents = latest_audit.documents.all() 
-#     except Audit.DoesNotExist:
-#         # If no Audit object is found, set both to None
-#         latest_audit = None
-#         documents = None
-
-#     # You can now return these objects, use them to render a template, or pass them to the context
-#     return latest_audit, documents
 
 
 def get_latest_audit_and_documents(request,feature):
@@ -284,9 +294,7 @@ def index(request):
 
         return render(request, template_name, context)
     
-    # Workpaper Automation End
-    else:
-        return redirect('landing_page')
+
 
 
 
@@ -309,20 +317,7 @@ def individualReport(request, pk):
         })
 
 
-    
-    
-    # doc_list = []
-    # for item in obj:
-    #     doc_list.append({
-    #         'id': item.id,
-    #         'name': item.name,
-    #         'file_type': item.file_type,
-    #         'operation_status': item.operation_status,
-    #         'input_path': item.input_path, # > /static/media/project_files/audit_check_files/shubham/Workpaper Automation/Test1s-2024/Control Walkthrough/CTL1/one_audit/AR8_cleaned.pdf
-    #         'output_path': item.output_path,
-    #         'uploaded_at': item.uploaded_at,
-            
-    #     })
+
     doc_list = []
     for item in obj:
         # Extract `meeting_type` and `control_name` from `input_path`
@@ -333,8 +328,13 @@ def individualReport(request, pk):
         else:
             meeting_type = None
             control_name = None
-
-        # Append document details with extracted fields
+        if item.file_type in ['.xls', '.xlsx' ,'.csv', '.CSV']:
+            sheet_names, data_list =report_reader(item.file_type,item.input_path)
+            print(f"Shett found {sheet_names}")
+            currentsheet = sheet_names[0]
+        else:
+            sheet_names, data_list,currentsheet = None, None,None
+            
         doc_list.append({
             'id': item.id,
             'name': item.name,
@@ -345,6 +345,9 @@ def individualReport(request, pk):
             'uploaded_at': item.uploaded_at,
             'meeting_type': meeting_type,
             'control_name': control_name,
+            'data_list': data_list if item.file_type in ['.xlsx','.XLSX', '.csv', '.CSV'] else None,
+            'Sheet': sheet_names if item.file_type == '.xlsx' else None,
+            'currentsheet': currentsheet 
         })
     
     print(f"  >>>> query one  >>>  {qs}")
@@ -353,7 +356,7 @@ def individualReport(request, pk):
     context = {
         'report': obj, 
         'audits': qs,
-        # 'metting_type': folder.meeting_type,        
+        'currentsheet': currentsheet,        
         'doc_list': doc_list, 
         'folder_list': folder_list, 
 
@@ -361,6 +364,6 @@ def individualReport(request, pk):
         }
 
     if request.headers.get('HX-Request'):
-        return render(request, 'usecase_workpaper/report_level/individual_report.html', context)
+        return render(request, 'usecase_workpaper/report_level/dashboard.html', context)
     else:
         return render(request, 'usecase_workpaper/report_level/dashboard.html', context)  # Fallback for full page render

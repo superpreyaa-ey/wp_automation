@@ -52,11 +52,11 @@
                                 <th>Control Name</th>
                                 <th>DOCUMENT NAME</th>
                                 <th>&nbsp;&nbsp;&nbsp;&nbsp;PROGRESS - STEP</th>       
-                                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status</th>                         
+                                {% comment %} <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status</th>                          {% endcomment %}
                                 <th><i class="ft-download-cloud blue-grey font-medium-5 ml-1"></i></th>
                                 
                                 <th>PRE-PROCESS</th>
-                                <th>&nbsp;&nbsp;VIEW</th>
+                                <th style="text-align: center; vertical-align: middle;">VIEW</th>
                                 <th class="m-1">
                                     <i class="ft-clock blue-grey font-medium-5" style="padding-left: 10px;"></i>&nbsp;&nbsp;Time Stamp
                                 </th>
@@ -69,21 +69,20 @@
                                     <td class="text-truncate border-0">
                                         <input type="checkbox" class="chk-task" name="check[]" value="{{audit.id}}">
                                     </td>
-                                    <td class="text-truncate border-0">
+                                    <td >
                                         {{ audit.meeting_type }}
                                         
                                     </td>
-                                    <td class="text-truncate border-0">
+                                    <td >
                                         {{ audit.control_name }}
                                         
                                     </td>
                                     
-                                    <td class="text-truncate border-0">
+                                    <td >
                                         {{ audit.name }}
                                         
                                     </td>
-                                    
-                                  
+
                                     <td>
                                          <div class="progress progress-sm border-0">
                                             
@@ -99,24 +98,29 @@
                                             {% endif %} 
                                         </div> 
                                     </td> 
-                                    <td style="font-size: smaller;">
+                                    {% comment %} <td style="font-size: smaller;">
                                         <i class="blue-grey font-medium-2 ml-0">{{ audit.operation_status }}</i>
-                                    </td>
+                                    </td> {% endcomment %}
                                     
-                                    <td class="text-truncate border-0">
+                                    <td>
                         
                                         <a href="{% url 'download_excel_wp' audit.id %}"><i class="ft-arrow-down blue-primary lighten-2 font-medium-5 ml-1"></i></a>
                                     </td>
                                     
-                                    <td style="font-size: smaller;">
-                                        <i class="blue-grey font-medium-2 ml-0">Done</i>
-                                    </td>
+                                    {% comment %} <td style="font-size: smaller;">                       
+                                        <i class="la la-check-circle success" style="font-size: 2rem;"></i>
+                                    </td> {% endcomment %}
+                                    <td style="font-size: smaller; text-align: center; vertical-align: middle;">                       
+                                        <i class="la la-check-circle success" style="font-size: 2rem;"></i>
+                                    </td>                                    
+                                    
                                     {% if audit.file_type|lower == '.pdf' %}
-                                        <td class="text-truncate border-0">
-                                            <a href="#" data-toggle="modal" data-target="#warning{{audit.id}}">
-                                                {% comment %}  <a href="#"  hx-target="#approval-container" hx-swap="outerHTML">  {% endcomment %}
-                                                <i class="ft-file-text danger font-medium-5 ml-1"></i>
+                                        <td>
+                                            
+                                            <a href="#" data-toggle="modal" data-target="#warning{{audit.id}}" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                                                <i class="la la-file-pdf-o danger" style="font-size: 2rem;"></i>
                                             </a>
+                                            
                                             
                                             <div class="modal fade text-left" id="warning{{audit.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17" aria-hidden="true">
                                                 <div class="modal-dialog modal-xl" role="document">
@@ -148,13 +152,33 @@
                                             
                                         </audio>
                                     </td>
+                                    {% elif audit.file_type|lower == '.xlsx' or audit.file_type|lower == '.csv' %}
+                                    
+                                    <td>
+                                        <a href="#" data-toggle="modal" data-target="#warning{{audit.id}}" style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                                            <i class="la la-file-excel-o success" style="font-size: 2rem;"></i>
+                                        </a>
+                                        
+                                        <div class="modal fade text-left" id="warning{{audit.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17" aria-hidden="true">
+                                            <div class="modal-dialog modal-xl" role="document">
+                                                <br>
+                                                
+                                                <div class="modal-content">
+                                                    <div id="sheet-cntr">
+                                                        {% include "usecase_workpaper/report_level/dattable.html" %}       
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
                                     {% else %}
                                     <td class="text-truncate border-0">
                                         <span class="text-muted">Unsupported file type</span>
                                     </td>
                                     {% endif %}
                                     <td style="font-size: smaller;">
-                                        <i class="blue-grey font-medium-2 ml-0">{{ audit.uploaded_at }}</i>
+                                        {{ audit.uploaded_at }}
                                     </td>
                                     
                                    
