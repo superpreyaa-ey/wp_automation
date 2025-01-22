@@ -33,33 +33,76 @@ from django.db import IntegrityError
 
 
 
+# def audit_attached_folder(audit, entityname, extracted_folder_path, flag, control_name):
+#     """
+#     Create or update an AttachedFolder instance based on a flag.
+
+#     :return: A tuple containing the AttachedFolder instance and a boolean indicating creation status.
+#     """
+#     # attached_folder = AttachedFolder.objects.create(folder_name=entityname, audit_id=audit,is_issue=flag)
+#     try:
+
+   
+#         attached_folder = None
+#         attached_folder_created = False
+#         if extracted_folder_path:
+#             defaults = {'folder_name': entityname}  # Set the folder_name in defaults
+#             if flag:  # Use quotes around A1
+#                 defaults['meeting_type'] = flag
+                
+#                 defaults['control_name'] = control_name
+#             # elif flag == I1:  # Use quotes around I1
+#             #     defaults['is_issue'] = flag
+
+#             attached_folder, attached_folder_created = AttachedFolder.objects.update_or_create(
+#                 audit_id=audit,  # Use audit.id to filter by the audit's primary key
+#                 defaults=defaults
+#             )
+
+#     except IntegrityError:
+#         # Handle the exception if there is a uniqueness constraint violation
+#         raise  # Re-raise the exception after logging or handling it as needed
+
+#     return attached_folder, attached_folder_created
+
+
+
 def audit_attached_folder(audit, entityname, extracted_folder_path, flag, control_name):
     """
     Create or update an AttachedFolder instance based on a flag.
 
+    :param audit: The audit object or ID.
+    :param entityname: The name of the entity.
+    :param extracted_folder_path: Path to the extracted folder.
+    :param flag: Flag indicating the meeting type or issue.
+    :param control_name: The control name associated with the folder.
     :return: A tuple containing the AttachedFolder instance and a boolean indicating creation status.
     """
-    # attached_folder = AttachedFolder.objects.create(folder_name=entityname, audit_id=audit,is_issue=flag)
     try:
-
         attached_folder = None
         attached_folder_created = False
-        if extracted_folder_path:
-            defaults = {'folder_name': entityname}  # Set the folder_name in defaults
-            if flag:  # Use quotes around A1
-                defaults['meeting_type'] = flag
-                defaults['control_name'] = control_name
-            # elif flag == I1:  # Use quotes around I1
-            #     defaults['is_issue'] = flag
 
+        if extracted_folder_path:
+            # Define the defaults for the object
+            defaults = {
+                'folder_name': entityname,
+                'meeting_type': flag,
+                'control_name': control_name
+            }
+
+            # Use update_or_create to either update or create the record
             attached_folder, attached_folder_created = AttachedFolder.objects.update_or_create(
-                audit_id=audit,  # Use audit.id to filter by the audit's primary key
+                audit_id=audit,  # Ensure you're passing the audit ID or object as appropriate
+                folder_name=entityname,
+                meeting_type=flag,
+                control_name=control_name,  # Add control_name to differentiate entries
                 defaults=defaults
             )
 
-    except IntegrityError:
-        # Handle the exception if there is a uniqueness constraint violation
-        raise  # Re-raise the exception after logging or handling it as needed
+    except IntegrityError as e:
+        # Log the error and re-raise it (you can customize this as needed)
+        print(f"IntegrityError occurred: {e}")
+        raise
 
     return attached_folder, attached_folder_created
 
@@ -79,7 +122,7 @@ def createauditwp(request):
         flag = request.POST.get('meeting_type', None)
         files = request.FILES.getlist('file')
         control_name = request.POST.get('control_name')
-        
+        # entityname = files[0].name
         print(f"Flag respnse:{flag}")
         print(f"Feature Requested >>>>>>>>>>>>>>>>> : {feature}")
         print(f"Control Name >>>>>>>>>>>>>>>>> : {control_name}")
@@ -96,8 +139,58 @@ def createauditwp(request):
         os.makedirs(folder_path, exist_ok=True)
         os.makedirs(preprocess_path, exist_ok=True)
         os.makedirs(final_output_path, exist_ok=True)
+        
+        # try:
+        #     # Get or create the audit instance
+        #     audit, created = Audit.objects.get_or_create(
+        #         audit_name=audit_name,
+        #         audit_year=audit_year,
+        #         feature_request=feature,
+        #         defaults={
+        #             'created_by': request.user,
+        #             'audit_status': 'Workpaper Report Uploaded',
+        #             'pre_process': preprocess_path,
+        #             'out_putpath': final_output_path
+        #         }
+        #     )
 
+        #     if created:
+        #         # Audit was newly created
+        #         try:
+        #             # Check if an AttachedFolder exists with the given criteria
+        #             attached_folder = AttachedFolder.objects.get(folder_name=entityname, audit_id=audit)
+                    
+        #             if attached_folder.control_name == control_name:
+        #                 # Control name matches, no further action needed
+        #                 pass
+        #             else:
+        #                 # Control name is different, create a new entry for AttachedFolder
+        #                 AttachedFolder.objects.create(
+        #                     folder_name=entityname,
+        #                     audit_id=audit,
+        #                     control_name=control_name
+        #                 )
 
+        #         except AttachedFolder.DoesNotExist:
+        #             # If no AttachedFolder exists, create a new one
+        #             AttachedFolder.objects.create(
+        #                 folder_name=entityname,
+        #                 audit_id=audit,
+        #                 control_name=control_name
+        #             )
+            
+        #     else:
+        #         # Audit already exists, update its fields
+        #         audit.audit_status = 'Workpaper Report Uploaded'  # Update the status
+        #         audit.pre_process = preprocess_path
+        #         audit.out_putpath = final_output_path
+        #         audit.feature_request = feature
+        #         audit.save(update_fields=['audit_status', 'pre_process', 'out_putpath', 'feature_request'])
+
+        # except IntegrityError as e:
+        #     # Handle uniqueness or other database-related errors
+        #     print(f"IntegrityError occurred: {e}")
+        #     raise
         try:
             audit, created = Audit.objects.get_or_create(
                 audit_name=audit_name,
@@ -111,6 +204,7 @@ def createauditwp(request):
                     'out_putpath': final_output_path
                 }
             )
+                    
             if not created:
                 # The audit already exists, so update it
                 audit.audit_status = 'Workpaper Report Uploaded' #'Audit Updated'  # Assuming you want to change the status on update
@@ -123,12 +217,14 @@ def createauditwp(request):
 
             pass
 
-        """ zip level """
-        print("inside workpaper automation zip======================1=================")
+        # """ zip level """
+        
+        print("AUDIT ======================1=================",audit)
         get_audit_name = audit.audit_name 
         get_audit_year = audit.audit_year
+        
         for file in files:
-
+            
             entityname = file.name
             handle_uploaded_file(file, entityname, audit,flag,feature,control_name)
             extracted_folder_path = unzip_files(entityname, audit,flag,feature,control_name)
@@ -140,8 +236,6 @@ def createauditwp(request):
                 # extracted_folder_path = script_folder_path
                 create_document_entries(extracted_folder_path, audit,preprocess_path,flag,control_name) 
 
-                # time.sleep(20)
-
         # added for meeting type and control name to show up after save
         # attached_folders = AttachedFolder.objects.filter(audit_id=latest_audit)
 
@@ -149,16 +243,13 @@ def createauditwp(request):
         get_control_name = attached_folder.control_name
 
         page = request.GET.get('page', 1)
-        print("feature name==========",feature)
         if feature == None:
             feature = request.GET.get('feature', None)
         else:
             pass
-        print("feature name=====1=====",feature)
-        audits = Audit.objects.filter(created_by = request.user,feature_request=feature,is_active=True).order_by('-id') 
-        print("inside workpaper automation======================1=================",audits)
 
-            
+        audits = Audit.objects.filter(created_by = request.user,feature_request=feature,is_active=True).order_by('-id') 
+
         isaudit,isissue,meeting_type,control_name,first_attached_folder,latest_audit, documents_obj = get_latest_audit_and_documents(request,feature)
 
         print("inside workpaper automation======================2=================",isaudit,isissue,meeting_type,control_name,first_attached_folder,latest_audit, documents_obj)
@@ -209,7 +300,7 @@ def createauditwp(request):
              isissue =False
             
         print(f"Context data :is_audit':{isaudit} ,'is_issue':{isissue},'folder_name':{first_attached_folder.folder_name}")
-
+ 
         context = {
         'audits': audits,
         'current_document': current_document,

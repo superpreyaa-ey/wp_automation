@@ -1,0 +1,174 @@
+{% load static %}
+
+<style>
+    .custom-iframe2 {
+        width: 100%;
+        height: 700px;
+        border: 2px solid #ddd;
+    }
+</style>
+{% comment %} <div class="card"> {% endcomment %}
+<div class="card box-shadow-0 border-warning">
+        <form method="post" action="#" hx-post="" hx-trigger="submit"  hx-target="#dynamicContent">
+            {% csrf_token %} 
+         
+        <div class="card-header">
+            <div class="col-xl-11 col-lg-18">
+                {% comment %} <h4 class="card-title primary">AUDIT TRAIL</h4> {% endcomment %}
+                <h5 class="modal-title primary">Audit Details for </h5>
+                {% for folder in folder_list %}
+                    <tr>
+                        <td>{{ folder.meeting_type }}</td>
+                        <td>{{ folder.control_name }}</td>
+                    </tr>
+                {% endfor %}
+                <div id="progressBarContainer" style="display:none; height: 18px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" id="progressBar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width:20%; height: 18px; text-align: center; line-height: 18px; color: white;"></div>
+                </div>
+                
+                {% comment %} <div class="progress" style="display:none;" id="progressBarContainer">
+                    <div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%" id="progressBar">0%</div>
+                </div> {% endcomment %}
+            </div>
+
+            <div class="heading-elements">
+                <ul class="list-inline mb-0">
+                    <li>
+                        <button type="submit" id="approval-submit" class="btn btn-sm btn-primary box-shadow-2 round btn-min-width pull-right">Generate Report</button>
+                    </li>
+                </ul>
+            </div>
+            
+        </div>
+     
+        <div class="card-body pl-0 pr-0">
+            <div id="todays-tasks">
+                <div class="table-responsive">
+                    <table class="table table-padded mb-0" id="recent-buyer-table">
+                        <thead>
+                            <tr>
+                                <th><i class="ft-check-circle blue-grey font-medium-5"></i></th>
+                                <th>Meeting Type</th>
+                                <th>Control Name</th>
+                                <th>DOCUMENT NAME</th>
+                                <th>&nbsp;&nbsp;&nbsp;&nbsp;PROGRESS - STEP</th>       
+                                <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status</th>                         
+                                <th><i class="ft-download-cloud blue-grey font-medium-5 ml-1"></i></th>
+                                
+                                <th>PRE-PROCESS</th>
+                                <th>&nbsp;&nbsp;VIEW</th>
+                                <th class="m-1">
+                                    <i class="ft-clock blue-grey font-medium-5" style="padding-left: 10px;"></i>&nbsp;&nbsp;Time Stamp
+                                </th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody id="audit_table">
+                            {% for audit in doc_list %}
+                                <tr>
+                                    <td class="text-truncate border-0">
+                                        <input type="checkbox" class="chk-task" name="check[]" value="{{audit.id}}">
+                                    </td>
+                                    <td class="text-truncate border-0">
+                                        {{ audit.meeting_type }}
+                                        
+                                    </td>
+                                    <td class="text-truncate border-0">
+                                        {{ audit.control_name }}
+                                        
+                                    </td>
+                                    
+                                    <td class="text-truncate border-0">
+                                        {{ audit.name }}
+                                        
+                                    </td>
+                                    
+                                  
+                                    <td>
+                                         <div class="progress progress-sm border-0">
+                                            
+                                            {% if audit.operation_status == 'COMPLETE' %}
+                                                 
+                                                <div class="progress-bar bg-gradient-x-success" role="progressbar" style="width: {{ 100 }}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% elif audit.operation_status == 'PENDING' %}
+                                                <div class="progress-bar bg-gradient-x-success" role="progressbar" style="width: {{ audit.progress }}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% elif audit.operation_status == 'FAILED' %}
+                                                <div class="progress-bar bg-gradient-x-danger" role="progressbar" style="width: {{ audit.progress }}%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% else %}  
+                                                <div class="progress-bar bg-gradient-x-success" role="progressbar" style="width:0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                            {% endif %} 
+                                        </div> 
+                                    </td> 
+                                    <td style="font-size: smaller;">
+                                        <i class="blue-grey font-medium-2 ml-0">{{ audit.operation_status }}</i>
+                                    </td>
+                                    
+                                    <td class="text-truncate border-0">
+                        
+                                        <a href="{% url 'download_excel_wp' audit.id %}"><i class="ft-arrow-down blue-primary lighten-2 font-medium-5 ml-1"></i></a>
+                                    </td>
+                                    
+                                    <td style="font-size: smaller;">
+                                        <i class="blue-grey font-medium-2 ml-0">Done</i>
+                                    </td>
+                                    {% if audit.file_type|lower == '.pdf' %}
+                                        <td class="text-truncate border-0">
+                                            <a href="#" data-toggle="modal" data-target="#warning{{audit.id}}">
+                                                {% comment %}  <a href="#"  hx-target="#approval-container" hx-swap="outerHTML">  {% endcomment %}
+                                                <i class="ft-file-text danger font-medium-5 ml-1"></i>
+                                            </a>
+                                            
+                                            <div class="modal fade text-left" id="warning{{audit.id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17" aria-hidden="true">
+                                                <div class="modal-dialog modal-xl" role="document">
+                                                    <br>
+                                                    <br>
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="myModalLabel17">Output Report</h5>
+                                                            <button type="button" class="close danger btn-secondary " data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                            
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                    
+                                                            <iframe src="{{ audit.input_path }}" class="custom-iframe2" frameborder="0"></iframe>
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    {% elif audit.file_type|lower == '.wav' or audit.file_type|lower == '.mp3' %}
+                                    <td>
+                                        {% comment %} {% if audit.id %} {% endcomment %}
+                                        <audio controls style="width: 150px; height: 25px;">
+                                            <source src="{{ audit.input_path }}" type="audio/wav">
+                                            
+                                        </audio>
+                                    </td>
+                                    {% else %}
+                                    <td class="text-truncate border-0">
+                                        <span class="text-muted">Unsupported file type</span>
+                                    </td>
+                                    {% endif %}
+                                    <td style="font-size: smaller;">
+                                        <i class="blue-grey font-medium-2 ml-0">{{ audit.uploaded_at }}</i>
+                                    </td>
+                                    
+                                   
+                                </tr>
+                            {% endfor %}
+                            
+                        </tbody>
+
+                        
+                    </table>
+                
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+

@@ -63,13 +63,16 @@
                  <!-- meeting type start -->
                 <div class="form-group">
                     <select id="meeting_type" name="meeting_type" class="form-control">
-                        {%if get_meeting_type %}
+                        {% comment %} {%if get_meeting_type %}
                             <option value="{{ get_meeting_type }}">{{ get_meeting_type }}</option>
                         {% else %}
                             <option value="none" selected="" disabled="">--Select Meeting Type--</option>
                             <option value="Control Walkthrough">Control Walkthrough</option>
                             <option value="Issue Walkthrough">Issue Walkthrough</option>
-                        {% endif %}
+                        {% endif %} {% endcomment %}
+                        <option value="none" selected="" disabled="">--Select Meeting Type--</option>
+                        <option value="Control Walkthrough">Control Walkthrough</option>
+                        <option value="Issue Walkthrough">Issue Walkthrough</option>
                     </select>
                 </div>
             <!-- meeting type end -->

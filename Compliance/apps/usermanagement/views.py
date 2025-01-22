@@ -231,7 +231,10 @@ def index(request):
 
         return render(request, template_name, context)
     elif feature == 'Audit Committee Summary Report Drafter':
-        print(f"File object of feature {feature}*********************** ",current_document.object_list[0].id)
+        try:
+            print(f"File object of feature {feature}*********************** ",current_document.object_list[0].id)
+        except:
+            pass
         if 'HX-Request' in request.headers:
             # Render only the partial content for htmx request
             template_name = 'usecase_two/iframe.html'
@@ -255,7 +258,10 @@ def index(request):
 
     elif feature == 'Workpaper Automation':
         print("inside Workpaper Automation if=========1==========")
-        print(f"File object of feature {feature}*********************** ",current_document.object_list[0].id)
+        try:
+            print(f"File object of feature {feature}*********************** ",current_document.object_list[0].id)
+        except:
+            pass
         if 'HX-Request' in request.headers:
             print("inside Workpaper Automation if========2===========")
             # Render only the partial content for htmx request
@@ -282,3 +288,79 @@ def index(request):
     else:
         return redirect('landing_page')
 
+
+
+def individualReport(request, pk):
+    recent_user = request.user
+    qs = Audit.objects.get(id=pk)
+    folders = AttachedFolder.objects.filter(audit_id=pk)
+    obj = Document.objects.filter(document_name = qs)
+    print("folders========",folders)
+    folder_list = []
+    for folder in folders:
+        folder_list.append({
+            'id': folder.id,
+            'folder_name': folder.folder_name,
+            'is_vector_db_in_progress': folder.is_vector_db_in_progress,
+            'is_issue': folder.is_issue,
+            'is_audit': folder.is_audit,
+            'meeting_type': folder.meeting_type,
+            'control_name': folder.control_name,
+        })
+
+
+    
+    
+    # doc_list = []
+    # for item in obj:
+    #     doc_list.append({
+    #         'id': item.id,
+    #         'name': item.name,
+    #         'file_type': item.file_type,
+    #         'operation_status': item.operation_status,
+    #         'input_path': item.input_path, # > /static/media/project_files/audit_check_files/shubham/Workpaper Automation/Test1s-2024/Control Walkthrough/CTL1/one_audit/AR8_cleaned.pdf
+    #         'output_path': item.output_path,
+    #         'uploaded_at': item.uploaded_at,
+            
+    #     })
+    doc_list = []
+    for item in obj:
+        # Extract `meeting_type` and `control_name` from `input_path`
+        input_path_parts = item.input_path.split('/')  # Split the input path by '/'
+        if len(input_path_parts) >= 6:  # Ensure the path has enough parts
+            meeting_type = input_path_parts[-3]  # Third from the last part
+            control_name = input_path_parts[-2]  # Second from the last part
+        else:
+            meeting_type = None
+            control_name = None
+
+        # Append document details with extracted fields
+        doc_list.append({
+            'id': item.id,
+            'name': item.name,
+            'file_type': item.file_type,
+            'operation_status': item.operation_status,
+            'input_path': item.input_path,
+            'output_path': item.output_path,
+            'uploaded_at': item.uploaded_at,
+            'meeting_type': meeting_type,
+            'control_name': control_name,
+        })
+    
+    print(f"  >>>> query one  >>>  {qs}")
+    # obj = qs.document_name_set.all().value
+    
+    context = {
+        'report': obj, 
+        'audits': qs,
+        # 'metting_type': folder.meeting_type,        
+        'doc_list': doc_list, 
+        'folder_list': folder_list, 
+
+        
+        }
+
+    if request.headers.get('HX-Request'):
+        return render(request, 'usecase_workpaper/report_level/individual_report.html', context)
+    else:
+        return render(request, 'usecase_workpaper/report_level/dashboard.html', context)  # Fallback for full page render

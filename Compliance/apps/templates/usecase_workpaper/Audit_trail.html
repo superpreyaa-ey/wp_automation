@@ -53,8 +53,9 @@
                                 <th><i class="ft-check-circle blue-grey font-medium-5"></i></th>
                                 <th class="m-0">AUDIT NAME</th>
                                 <th>YEAR</th>
-                                <th>MEETING TYPE</th>
-                                <th>CONTROL NAME</th>
+                                {% comment %} <th>CONFIGURATION</th> {% endcomment %}
+                                {% comment %} <th>MEETING TYPE</th>
+                                <th>CONTROL NAME</th> {% endcomment %}
                                 {% comment %} <th><i class="ft-folder blue-grey font-medium-5 ml-1"></i></th> {% endcomment %}
                                 <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status</th>
                                 {% comment %} Audit Report Generate 2 Audit Report Pending 3 Audit Report Failed{% endcomment %}
@@ -71,7 +72,7 @@
                                 {% comment %} <th>ACTIONS</th> {% endcomment %}
                                 
                                 {% comment %} <th><i class="ft-clock blue-grey font-medium-5 ml-1"></i></th> {% endcomment %}
-                                <th>Audio Player</th>
+                                <th>FOLDER</th>
                             </tr>
                         </thead>
                         
@@ -81,18 +82,80 @@
                                     <td class="text-truncate border-0">
                                         <input type="checkbox" class="chk-task" name="check[]" value="{{audit.id}}">
                                     </td>
-                                    <td>
-                                        <div class="media">
-
-                                            <div class="media-body media-middle">
-                                                <span class="media-heading text-bold-700">{{ audit.audit_name }}</span>
+                                    <td class="text-truncate border-0">
+                                        <!-- Trigger for Modal --> 
+                                        <a href="#" data-toggle="modal" data-target="#detailsModal{{ audit.id }}">
+                                            {{ audit.audit_name }}
+                                        </a>
+           
+                                        <!-- Modal for Audit Details -->
+                                        
+                                        <div class="modal fade text-left" id="detailsModal{{ audit.id }}" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel{{ audit.id }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <br>
+                                                <br>
+                                                <br>
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-warning">
+                                                        <h5 class="modal-title" id="detailsModalLabel{{ audit.id }}">Audit Details for {{ audit.audit_name }}</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <!-- Table for Meeting Type and Control Name -->
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Meeting Type</th>
+                                                                    <th>Control Name</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% for folder in audit.attachedfolder_set.all %}
+                                                                    <tr>
+                                                                        <td>{{ folder.meeting_type }}</td>
+                                                                        <td>{{ folder.control_name }}</td>
+                                                                    </tr>
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
+                                    {% comment %} <td>
+                                        <div class="media">
+
+                                            <a href="{% url 'individualReport' audit.id %}">{{ audit.audit_name }}</a> 
+
+                                        </div>
+                                    </td>  {% endcomment %}
                                     <td class="text-left">
                                         <a href="mailto:email@example.com">{{ audit.audit_year }}</a>
                                     </td>
-                                    <td class="text-left" id="meeting_type">
+                                    
+                                    
+                                    
+                                    {% comment %} <td class="text-left" id="meeting_type">
+                                        {% for folder in audit.attachedfolder_set.all %}
+                                            {{ folder.meeting_type }}{% if not forloop.last %} / {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td class="text-left" id="control_name">
+                                        {% for folder in audit.attachedfolder_set.all %}
+                                            {{ folder.control_name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </td> {% endcomment %}
+
+                                    {% comment %} {% for folder in audit.attachedfolder_set.all %}
+                                    <td class="text-left" id="meeting_type">{{ folder.meeting_type }}</td>
+                                    <td class="text-left" id="control_name">{{ folder.control_name }}</td>
+                                    {% endfor %} {% endcomment %}
+                                    {% comment %} <td class="text-left" id="meeting_type">
+
                                         {{ audit.attachedfolder_set.get.meeting_type }}
                                         
                                     </td>
@@ -100,11 +163,8 @@
                                     <td class="text-left" id="meeting_type">
                                         {{ audit.attachedfolder_set.get.control_name }}
                                         
-                                    </td>
-                                    
-                                    {% comment %} <td>
-                                        <a href="{% url 'download_uploaded_file' audit.audit_file_path %}" target="_blank">{{ audit.audit_file.name }}</a>
                                     </td> {% endcomment %}
+
 
                                     <td class="text-left" id="audit_status_{{audit.id}}">
                                         {{ audit.audit_status }}
@@ -167,15 +227,13 @@
                                         <i class="blue-grey font-medium-2 ml-0">{{ audit.uploaded_at }}</i>
                                     </td>
                                     <td>
-                                        {% if audit.id %}
-                                            <audio controls style="width: 150px; height: 25px;">
-                                                <source src="file:///C:/Projects/AURA/ABG-main/Compliance/static/media/Test/insurance01_mono_8000_0.wav" type="audio/wav">
-                                                Your browser does not support the audio element.
-                                            </audio>
-                                        {% else %}
-                                            No Audio File
-                                        {% endif %}
+                                        <div class="media">
+                                            
+                                            <a href="{% url 'individualReport' audit.id %}"><i class="ft-folder blue-primary lighten-2 font-medium-5 ml-1"></i></a> 
+                                           
+                                        </div>
                                     </td>
+
                                     {% comment %} <td>                                               
                                         <span class="dropdown">
                                             <button id="btnSearchDrop12" type="button" class="btn btn-sm btn-icon btn-pure font-medium-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
