@@ -34,6 +34,8 @@ class Audit(models.Model):
     progress = models.IntegerField(default=0,null=True,blank=True)
     feature_request = models.CharField(default=None,max_length=80,null=True,blank=True)
     current_docid = models.IntegerField(default=None,null=True,blank=True)
+    vertical = models.IntegerField(default=1)  # how many level are there
+    # meetingtype = models.CharField(default=None,max_length=100,null=True,blank=True) 
     uploaded_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     
     def __str__(self):

@@ -48,8 +48,8 @@
                         <thead>
                             <tr>
                                 <th><i class="ft-check-circle blue-grey font-medium-5"></i></th>
-                                <th>Meeting Type</th>
-                                <th>Control Name</th>
+                                {% comment %} <th>Meeting Type</th>
+                                <th>Control Name</th> {% endcomment %}
                                 <th>DOCUMENT NAME</th>
                                 <th>&nbsp;&nbsp;&nbsp;&nbsp;PROGRESS - STEP</th>       
                                 {% comment %} <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status</th>                          {% endcomment %}
@@ -69,14 +69,14 @@
                                     <td class="text-truncate border-0">
                                         <input type="checkbox" class="chk-task" name="check[]" value="{{audit.id}}">
                                     </td>
-                                    <td >
+                                    {% comment %} <td >
                                         {{ audit.meeting_type }}
                                         
                                     </td>
                                     <td >
                                         {{ audit.control_name }}
                                         
-                                    </td>
+                                    </td> {% endcomment %}
                                     
                                     <td >
                                         {{ audit.name }}

@@ -123,9 +123,7 @@ def createauditwp(request):
         files = request.FILES.getlist('file')
         control_name = request.POST.get('control_name')
         # entityname = files[0].name
-        print(f"Flag respnse:{flag}")
-        print(f"Feature Requested >>>>>>>>>>>>>>>>> : {feature}")
-        print(f"Control Name >>>>>>>>>>>>>>>>> : {control_name}")
+
         
         request_user = str(request.user)
         # Create folder path
@@ -139,13 +137,58 @@ def createauditwp(request):
         os.makedirs(folder_path, exist_ok=True)
         os.makedirs(preprocess_path, exist_ok=True)
         os.makedirs(final_output_path, exist_ok=True)
-        
+
+
+        try:
+            # Check if the Audit exists for the given user
+            audit = Audit.objects.filter(audit_name=audit_name, audit_year=audit_year,created_by=request.user,feature_request=feature).first()
+
+            if audit:
+                # Check if AttachedFolder exists with the given meeting_type
+                attached_folder = AttachedFolder.objects.filter(audit_id=audit,meeting_type=flag,control_name=control_name).first()
+
+                if attached_folder:
+                    print(" Folder exists >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                    # Update the existing Audit entry
+                    audit.audit_status = 'Workpaper Report Uploaded'
+                    audit.pre_process = preprocess_path
+                    audit.out_putpath = final_output_path
+                    audit.feature_request = feature
+                    audit.save(update_fields=['audit_status', 'pre_process', 'out_putpath', 'feature_request'])
+                else:
+                    print(" New Folder  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+                    # Create a new Audit if meeting_type is different or no entry in AttachedFolder
+                    audit = Audit.objects.create(
+                        audit_name=audit_name,
+                        audit_year=audit_year,
+                        created_by=request.user,
+                        audit_status='Workpaper Report Uploaded',
+                        pre_process=preprocess_path,
+                        out_putpath=final_output_path,
+                        feature_request=feature,
+                    )
+
+            else:
+                # Create a new Audit and its associated AttachedFolder
+                audit = Audit.objects.create(
+                    audit_name=audit_name,
+                    audit_year=audit_year,
+                    created_by=request.user,
+                    audit_status='Workpaper Report Uploaded',
+                    pre_process=preprocess_path,
+                    out_putpath=final_output_path,
+                    feature_request=feature
+                )
+
+        except IntegrityError as e:
+            print(f"IntegrityError occurred: {e}")
+
         # try:
-        #     # Get or create the audit instance
         #     audit, created = Audit.objects.get_or_create(
         #         audit_name=audit_name,
         #         audit_year=audit_year,
         #         feature_request=feature,
+
         #         defaults={
         #             'created_by': request.user,
         #             'audit_status': 'Workpaper Report Uploaded',
@@ -153,69 +196,18 @@ def createauditwp(request):
         #             'out_putpath': final_output_path
         #         }
         #     )
-
-        #     if created:
-        #         # Audit was newly created
-        #         try:
-        #             # Check if an AttachedFolder exists with the given criteria
-        #             attached_folder = AttachedFolder.objects.get(folder_name=entityname, audit_id=audit)
                     
-        #             if attached_folder.control_name == control_name:
-        #                 # Control name matches, no further action needed
-        #                 pass
-        #             else:
-        #                 # Control name is different, create a new entry for AttachedFolder
-        #                 AttachedFolder.objects.create(
-        #                     folder_name=entityname,
-        #                     audit_id=audit,
-        #                     control_name=control_name
-        #                 )
-
-        #         except AttachedFolder.DoesNotExist:
-        #             # If no AttachedFolder exists, create a new one
-        #             AttachedFolder.objects.create(
-        #                 folder_name=entityname,
-        #                 audit_id=audit,
-        #                 control_name=control_name
-        #             )
-            
-        #     else:
-        #         # Audit already exists, update its fields
-        #         audit.audit_status = 'Workpaper Report Uploaded'  # Update the status
+        #     if not created:
+        #         # The audit already exists, so update it
+        #         audit.audit_status = 'Workpaper Report Uploaded' #'Audit Updated'  # Assuming you want to change the status on update
         #         audit.pre_process = preprocess_path
         #         audit.out_putpath = final_output_path
         #         audit.feature_request = feature
+        #         # uploaded_at =datetime.datetime.now(),
         #         audit.save(update_fields=['audit_status', 'pre_process', 'out_putpath', 'feature_request'])
+        # except IntegrityError:
 
-        # except IntegrityError as e:
-        #     # Handle uniqueness or other database-related errors
-        #     print(f"IntegrityError occurred: {e}")
-        #     raise
-        try:
-            audit, created = Audit.objects.get_or_create(
-                audit_name=audit_name,
-                audit_year=audit_year,
-                feature_request=feature,
-
-                defaults={
-                    'created_by': request.user,
-                    'audit_status': 'Workpaper Report Uploaded',
-                    'pre_process': preprocess_path,
-                    'out_putpath': final_output_path
-                }
-            )
-                    
-            if not created:
-                # The audit already exists, so update it
-                audit.audit_status = 'Workpaper Report Uploaded' #'Audit Updated'  # Assuming you want to change the status on update
-                audit.pre_process = preprocess_path
-                audit.out_putpath = final_output_path
-                audit.feature_request = feature
-                # uploaded_at =datetime.datetime.now(),
-                audit.save(update_fields=['audit_status', 'pre_process', 'out_putpath', 'feature_request'])
-        except IntegrityError:
-
-            pass
+        #     pass
 
         # """ zip level """
         

@@ -54,8 +54,8 @@
                                 <th class="m-0">AUDIT NAME</th>
                                 <th>YEAR</th>
                                 {% comment %} <th>CONFIGURATION</th> {% endcomment %}
-                                {% comment %} <th>MEETING TYPE</th>
-                                <th>CONTROL NAME</th> {% endcomment %}
+                                <th>MEETING TYPE</th>
+                                <th>CONTROL NAME</th>  
                                 {% comment %} <th><i class="ft-folder blue-grey font-medium-5 ml-1"></i></th> {% endcomment %}
                                 <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status</th>
                                 {% comment %} Audit Report Generate 2 Audit Report Pending 3 Audit Report Failed{% endcomment %}
@@ -126,6 +126,20 @@
                                             </div>
                                         </div>
                                     </td>
+                                    <td class="text-left">
+                                        <a href="mailto:email@example.com">{{ audit.audit_year }}</a>
+                                    </td>
+                                    <td>
+                                        {% for folder in audit.attachedfolder_set.all %}
+                                            {{ folder.meeting_type }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for folder in audit.attachedfolder_set.all %}
+                                            {{ folder.control_name }}{% if not forloop.last %}, {% endif %}
+                                        {% endfor %}
+                                    </td>                               
+                                    
                                     {% comment %} <td>
                                         <div class="media">
 
@@ -133,9 +147,7 @@
 
                                         </div>
                                     </td>  {% endcomment %}
-                                    <td class="text-left">
-                                        <a href="mailto:email@example.com">{{ audit.audit_year }}</a>
-                                    </td>
+                                    
                                     
                                     
 
