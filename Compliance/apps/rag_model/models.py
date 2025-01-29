@@ -36,6 +36,7 @@ class Audit(models.Model):
     current_docid = models.IntegerField(default=None,null=True,blank=True)
     vertical = models.IntegerField(default=1)  # how many level are there
     # meetingtype = models.CharField(default=None,max_length=100,null=True,blank=True) 
+    process_name = models.CharField(default=None,max_length=255,null=True,blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     
     def __str__(self):
@@ -50,6 +51,7 @@ class AttachedFolder(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     meeting_type = models.CharField(default=None,max_length=255,null=True,blank=True) 
     control_name = models.CharField(default=None,max_length=255,null=True,blank=True)
+    
     # pre_process = models.TextField(default=None,null=True,blank=True)
 
     def __str__(self):

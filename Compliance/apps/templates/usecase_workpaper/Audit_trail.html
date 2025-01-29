@@ -51,7 +51,8 @@
                         <thead>
                             <tr>
                                 <th><i class="ft-check-circle blue-grey font-medium-5"></i></th>
-                                <th class="m-0">AUDIT NAME</th>
+                                <th class="m-0">PROCRSS NAME</th>
+                                <th class="m-0">AUDIT</th>
                                 <th>YEAR</th>
                                 {% comment %} <th>CONFIGURATION</th> {% endcomment %}
                                 <th>MEETING TYPE</th>
@@ -82,8 +83,11 @@
                                     <td class="text-truncate border-0">
                                         <input type="checkbox" class="chk-task" name="check[]" value="{{audit.id}}">
                                     </td>
+                                     <!-- Trigger for Modal --> 
+                                    <td class="text-truncate border-0">
+                                        {{ audit.process_name }}
+                                    </td>
                                     <td>
-                                        <!-- Trigger for Modal --> 
                                         <a href="#" data-toggle="modal" data-target="#detailsModal{{ audit.id }}">
                                             {{ audit.audit_name }}
                                         </a>
@@ -140,16 +144,9 @@
                                         {% endfor %}
                                     </td>                               
                                     
-                                    {% comment %} <td>
-                                        <div class="media">
 
-                                            <a href="{% url 'individualReport' audit.id %}">{{ audit.audit_name }}</a> 
-
-                                        </div>
-                                    </td>  {% endcomment %}
                                     
-                                    
-                                    
+                                                                
 
 
                                     <td class="text-left" id="audit_status_{{audit.id}}">

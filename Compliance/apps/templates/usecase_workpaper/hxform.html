@@ -1,21 +1,42 @@
 
-{% comment %} <form method="post" action="{% url 'createauditwp' %}" enctype="multipart/form-data" id="create-audit-form">
-    {% csrf_token %} {% endcomment %}
 
-
-<form method="post" action="{% url 'createauditwp' %}"
+{% comment %} <form method="post" action="{% url 'createauditwp' %}"
     hx-post="{% url 'createauditwp' %}"
     hx-encoding="multipart/form-data"
     hx-trigger="submit"
     hx-target="#approval_container"
     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
     id="create-audit-form">
-  {% csrf_token %}
-
-  
+    {% csrf_token %}
     <input type="hidden" name="feature" value="Workpaper Automation">
     <div class="form-body">
         <div class="row">
+            <div class="col-md-6">
+
+                {% if process_name %}
+                    <!-- Display input field with value if get_audit_name is not None -->
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            name="process_name" 
+                            id="roundText" 
+                            class="form-control round" 
+                            value="{{ process_name }}">  <!-- Set the value -->
+                    </div>
+                    
+                {% else %}
+                    <!-- Display default input field if get_audit_name is None -->
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            name="process_name" 
+                            id="roundText" 
+                            class="form-control round" 
+                            placeholder="process name">  <!-- Default placeholder -->
+                    </div>
+                {% endif %}
+
+            </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <select id="companyinput5" name="audit_year" class="form-control">
@@ -34,49 +55,42 @@
 
             <div class="col-md-6">
 
-            {% if get_audit_name %}
-                <!-- Display input field with value if get_audit_name is not None -->
-                <div class="form-group">
-                    <input 
-                        type="text" 
-                        name="audit_name" 
-                        id="roundText" 
-                        class="form-control round" 
-                        value="{{ get_audit_name }}">  <!-- Set the value -->
-                </div>
-                
-            {% else %}
-                <!-- Display default input field if get_audit_name is None -->
-                <div class="form-group">
-                    <input 
-                        type="text" 
-                        name="audit_name" 
-                        id="roundText" 
-                        class="form-control round" 
-                        placeholder="Audit name">  <!-- Default placeholder -->
-                </div>
-            {% endif %}
+                {% if get_audit_name %}
+                    <!-- Display input field with value if get_audit_name is not None -->
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            name="audit_name" 
+                            id="roundText" 
+                            class="form-control round" 
+                            value="{{ get_audit_name }}">  <!-- Set the value -->
+                    </div>
+                    
+                {% else %}
+                    <!-- Display default input field if get_audit_name is None -->
+                    <div class="form-group">
+                        <input 
+                            type="text" 
+                            name="audit_name" 
+                            id="roundText" 
+                            class="form-control round" 
+                            placeholder="Audit name">  <!-- Default placeholder -->
+                    </div>
+                {% endif %}
 
             </div>
-            <br>
             <div class="col-md-6">
                  <!-- meeting type start -->
                 <div class="form-group">
                     <select id="meeting_type" name="meeting_type" class="form-control">
-                        {% comment %} {%if get_meeting_type %}
-                            <option value="{{ get_meeting_type }}">{{ get_meeting_type }}</option>
-                        {% else %}
-                            <option value="none" selected="" disabled="">--Select Meeting Type--</option>
-                            <option value="Control Walkthrough">Control Walkthrough</option>
-                            <option value="Issue Walkthrough">Issue Walkthrough</option>
-                        {% endif %} {% endcomment %}
+
                         <option value="none" selected="" disabled="">--Select Meeting Type--</option>
                         <option value="Control Walkthrough">Control Walkthrough</option>
                         <option value="Issue Walkthrough">Issue Walkthrough</option>
                     </select>
                 </div>
             <!-- meeting type end -->
-        </div>
+            </div>
 
             <div class="col-md-6">
 
@@ -106,7 +120,7 @@
     
             </div>
             <br>
-
+ 
             <!-- Radio buttons row -->
             <div class="col-md-12">
                 <div >
@@ -114,9 +128,7 @@
      
                 </div>
               
-                
-
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <div >
                     <span class="info">Upload Audio File in zip format</span>
                 </div>
@@ -134,10 +146,6 @@
             </div>
             
         </div>
-
-
-         
-        
         <div class="form-actions right">
             
             <button type="button" class="btn btn-sm btn-danger box-shadow-2 round btn-min-width  mr-1">
@@ -149,7 +157,168 @@
         </div>
         
     </div>
+</form> {% endcomment %}
+<form
+  method="post"
+  action="{% url 'createauditwp' %}"
+  hx-post="{% url 'createauditwp' %}"
+  hx-encoding="multipart/form-data"
+  hx-trigger="submit"
+  hx-target="#approval_container"
+  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+  id="create-audit-form"
+>
+  {% csrf_token %}
+  <input type="hidden" name="feature" value="Workpaper Automation" />
+  <div class="form-body">
+    <div class="row">
+      <!-- Process Name -->
+      <div class="col-md-6">
+        <div class="form-group">
+          {% if process_name %}
+          <input
+            type="text"
+            name="process_name"
+            id="roundText"
+            class="form-control round"
+            value="{{ process_name }}"
+          />
+          {% else %}
+          <input
+            type="text"
+            name="process_name"
+            id="roundText"
+            class="form-control round"
+            placeholder="Process Name"
+          />
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Audit Year -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <select id="companyinput5" name="audit_year" class="form-control">
+            {% if get_audit_year %}
+            <option value="{{ get_audit_year }}">{{ get_audit_year }}</option>
+            {% else %}
+            <option value="none" selected disabled>--Select Audit Period--</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            {% endif %}
+          </select>
+        </div>
+      </div>
+
+      <!-- Audit Name -->
+      <div class="col-md-6">
+        <div class="form-group">
+          {% if get_audit_name %}
+          <input
+            type="text"
+            name="audit_name"
+            id="roundText"
+            class="form-control round"
+            value="{{ get_audit_name }}"
+          />
+          {% else %}
+          <input
+            type="text"
+            name="audit_name"
+            id="roundText"
+            class="form-control round"
+            placeholder="Audit Name"
+          />
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Meeting Type -->
+      <div class="col-md-6">
+        <div class="form-group">
+          <select id="meeting_type" name="meeting_type" class="form-control">
+            <option value="none" selected disabled>--Select Meeting Type--</option>
+            <option value="Control Walkthrough">Control Walkthrough</option>
+            <option value="Issue Walkthrough">Issue Walkthrough</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Control Name -->
+      {% comment %} <div class="col-md-6">
+        <div class="form-group">
+          {% if get_control_name %}
+          <input
+            type="text"
+            name="control_name"
+            id="roundText"
+            class="form-control round"
+            value="{{ get_control_name }}"
+          />
+          {% else %}
+          <input
+            type="text"
+            name="control_name"
+            id="roundText"
+            class="form-control round"
+            placeholder="Control Name"
+          />
+          {% endif %}
+        </div>
+      </div> {% endcomment %}
+
+      <!-- File Upload -->
+      <div class="col-md-12">
+        <div class="form-group">
+        
+          <div class="custom-file">
+            <input
+              type="file"
+              name="file"
+              class="custom-file-input"
+              id="inputGroupFile01"
+            />
+            <label class="custom-file-label" for="inputGroupFile01"
+              >Upload Audio File (ZIP Format)...</label
+            >
+          </div>
+        </div>
+      </div>
+      
+      <!-- Spinner -->
+      <div class="col-md-12">
+        {% include "usecase_workpaper/spinner.html" %}
+      </div>
+    
+      <!-- Buttons -->
+      <br>
+      <div class="col-md-12 text-right mt-3">
+        <button
+          type="button"
+          class="btn btn-sm btn-danger box-shadow-2 round btn-min-width mr-1"
+        >
+          <i class="ft-x"></i> Cancel
+        </button>
+        <button
+          type="submit"
+          id="create-audit-submit"
+          class="btn btn-sm btn-primary box-shadow-2 round btn-min-width"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
 </form>
 
 
 
+                        {% comment %} {%if get_meeting_type %}
+                            <option value="{{ get_meeting_type }}">{{ get_meeting_type }}</option>
+                        {% else %}
+                            <option value="none" selected="" disabled="">--Select Meeting Type--</option>
+                            <option value="Control Walkthrough">Control Walkthrough</option>
+                            <option value="Issue Walkthrough">Issue Walkthrough</option>
+                        {% endif %} {% endcomment %}

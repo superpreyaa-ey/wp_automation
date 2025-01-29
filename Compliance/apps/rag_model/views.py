@@ -91,7 +91,7 @@ def convert_text_to_pdf(text_file, pdf_file):
 
 
     
-def handle_uploaded_file(f, filename, audit,flag,feature,control_name= None):
+def handle_uploaded_file(f, filename, audit,flag,feature,control_name= None,process_name=None):
     # Define the destination directory path
     # audit.audit_name + '-' + str(audit.audit_year)
     if flag == None or flag == 1:
@@ -101,8 +101,8 @@ def handle_uploaded_file(f, filename, audit,flag,feature,control_name= None):
         dest_dir = os.path.join('static','media','project_files','audit_check_files',str(audit.created_by) ,feature, audit.audit_name + '-' + str(audit.audit_year),flag)
     elif flag == I1:
         dest_dir = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature, audit.audit_name + '-' + str(audit.audit_year),flag)
-    elif control_name !=None:
-        dest_dir = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature, audit.audit_name + '-' + str(audit.audit_year),flag,control_name)
+    elif control_name !=None or process_name !=None:
+        dest_dir = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature,process_name, audit.audit_name + '-' + str(audit.audit_year),flag,control_name)
     else:
         dest_dir = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature, audit.audit_name + '-' + str(audit.audit_year),flag)
 
@@ -113,7 +113,7 @@ def handle_uploaded_file(f, filename, audit,flag,feature,control_name= None):
         for chunk in f.chunks():
             destination.write(chunk)
 
-def unzip_files(filename, audit,flag,feature,control_name=None):
+def unzip_files(filename, audit,flag,feature,control_name=None,process_name=None):
     # Final Report Email - Retirement Strategies - Legacy Group Annuity SegmentBlock.zip'\
     extracted_folder_path = None
 
@@ -131,9 +131,9 @@ def unzip_files(filename, audit,flag,feature,control_name=None):
         extracted_folder_path = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature,audit.audit_name + '-' + str(audit.audit_year),I1,filename.split('.')[0])
         with zipfile.ZipFile(os.path.join('static','media','project_files','audit_check_files',str(audit.created_by) ,feature,audit.audit_name + '-' + str(audit.audit_year),I1,filename), 'r') as zip_ref:
             zip_ref.extractall(extracted_folder_path)
-    elif control_name != None:
-        extracted_folder_path = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature,audit.audit_name + '-' + str(audit.audit_year),flag,control_name,filename.split('.')[0])
-        with zipfile.ZipFile(os.path.join('static','media','project_files','audit_check_files',str(audit.created_by) ,feature,audit.audit_name + '-' + str(audit.audit_year),flag,control_name,filename), 'r') as zip_ref:
+    elif control_name != None or process_name != None:
+        extracted_folder_path = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature,process_name,audit.audit_name + '-' + str(audit.audit_year),flag,control_name,filename.split('.')[0])
+        with zipfile.ZipFile(os.path.join('static','media','project_files','audit_check_files',str(audit.created_by) ,feature,process_name,audit.audit_name + '-' + str(audit.audit_year),flag,control_name,filename), 'r') as zip_ref:
             zip_ref.extractall(extracted_folder_path)
     else:
         extracted_folder_path = os.path.join('static','media','project_files','audit_check_files', str(audit.created_by),feature,audit.audit_name + '-' + str(audit.audit_year),flag,filename.split('.')[0])

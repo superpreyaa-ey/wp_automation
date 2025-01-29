@@ -67,7 +67,7 @@ from django.db import IntegrityError
 
 
 
-def audit_attached_folder(audit, entityname, extracted_folder_path, flag, control_name):
+def audit_attached_folder(audit, entityname, extracted_folder_path, flag, control_name,process_name):
     """
     Create or update an AttachedFolder instance based on a flag.
 
@@ -121,7 +121,9 @@ def createauditwp(request):
         feature = request.POST.get('feature', None)
         flag = request.POST.get('meeting_type', None)
         files = request.FILES.getlist('file')
-        control_name = request.POST.get('control_name')
+        control_name = request.POST.get('control_name',"CTL_0")
+        process_name = request.POST.get('process_name')
+
         # entityname = files[0].name
 
         
@@ -129,9 +131,9 @@ def createauditwp(request):
         # Create folder path
         
         folder_name = f"{audit_name}-{audit_year}"
-        folder_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature, folder_name)
-        preprocess_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature, folder_name,'Pre_Process')
-        final_output_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature, folder_name,'Process_Output')
+        folder_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature,process_name, folder_name)
+        preprocess_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature,process_name, folder_name,'Pre_Process')
+        final_output_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature,process_name, folder_name,'Process_Output')
         # output_path = audit.out_putpath 
         
         os.makedirs(folder_path, exist_ok=True)
@@ -141,7 +143,7 @@ def createauditwp(request):
 
         try:
             # Check if the Audit exists for the given user
-            audit = Audit.objects.filter(audit_name=audit_name, audit_year=audit_year,created_by=request.user,feature_request=feature).first()
+            audit = Audit.objects.filter(audit_name=audit_name,process_name=process_name, audit_year=audit_year,created_by=request.user,feature_request=feature).first()
 
             if audit:
                 # Check if AttachedFolder exists with the given meeting_type
@@ -166,6 +168,7 @@ def createauditwp(request):
                         pre_process=preprocess_path,
                         out_putpath=final_output_path,
                         feature_request=feature,
+                        process_name=process_name
                     )
 
             else:
@@ -177,53 +180,27 @@ def createauditwp(request):
                     audit_status='Workpaper Report Uploaded',
                     pre_process=preprocess_path,
                     out_putpath=final_output_path,
-                    feature_request=feature
+                    feature_request=feature,
+                    process_name=process_name
                 )
 
         except IntegrityError as e:
             print(f"IntegrityError occurred: {e}")
 
-        # try:
-        #     audit, created = Audit.objects.get_or_create(
-        #         audit_name=audit_name,
-        #         audit_year=audit_year,
-        #         feature_request=feature,
-
-        #         defaults={
-        #             'created_by': request.user,
-        #             'audit_status': 'Workpaper Report Uploaded',
-        #             'pre_process': preprocess_path,
-        #             'out_putpath': final_output_path
-        #         }
-        #     )
-                    
-        #     if not created:
-        #         # The audit already exists, so update it
-        #         audit.audit_status = 'Workpaper Report Uploaded' #'Audit Updated'  # Assuming you want to change the status on update
-        #         audit.pre_process = preprocess_path
-        #         audit.out_putpath = final_output_path
-        #         audit.feature_request = feature
-        #         # uploaded_at =datetime.datetime.now(),
-        #         audit.save(update_fields=['audit_status', 'pre_process', 'out_putpath', 'feature_request'])
-        # except IntegrityError:
-
-        #     pass
-
-        # """ zip level """
         
-        print("AUDIT ======================1=================",audit)
         get_audit_name = audit.audit_name 
         get_audit_year = audit.audit_year
+        processname = audit.process_name
         
         for file in files:
             
             entityname = file.name
-            handle_uploaded_file(file, entityname, audit,flag,feature,control_name)
-            extracted_folder_path = unzip_files(entityname, audit,flag,feature,control_name)
+            handle_uploaded_file(file, entityname, audit,flag,feature,control_name,process_name)
+            extracted_folder_path = unzip_files(entityname, audit,flag,feature,control_name,process_name)
             
             if extracted_folder_path: 
                 print("inside if folder path===============")
-                attached_folder, attached_folder_created = audit_attached_folder(audit,entityname, extracted_folder_path, flag, control_name)
+                attached_folder, attached_folder_created = audit_attached_folder(audit,entityname, extracted_folder_path, flag, control_name,process_name)
                 # script_folder_path = os.path.join('static', 'media', 'project_files', 'audio_script_files')
                 # extracted_folder_path = script_folder_path
                 create_document_entries(extracted_folder_path, audit,preprocess_path,flag,control_name) 
@@ -303,6 +280,7 @@ def createauditwp(request):
         'folder_name':first_attached_folder.folder_name,
         'get_audit_name':get_audit_name,
         'get_audit_year':get_audit_year,
+        'process_name':processname,
 
         'get_meeting_type':get_meeting_type,
         'get_control_name':get_control_name,
@@ -331,6 +309,7 @@ def createauditwp(request):
 
     isaudit,isissue,first_attached_folder,latest_audit, documents_obj = get_latest_audit_and_documents(request,feature)
     get_audit_name = latest_audit.audit_name 
+    processname = latest_audit.process_name
     paginator = Paginator(documents_obj, 1)  # Show 1 document per page
 
     try:
@@ -382,6 +361,7 @@ def createauditwp(request):
     'is_issue':isissue,
     'folder_name':first_attached_folder.folder_name,
     'get_audit_name':get_audit_name,
+    'process_name':processname,
     }
     
     # 'dashboard.html'
