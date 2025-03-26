@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block body %}
+{% load static %}
+
+<div class="app-content content ">
+    {% comment %} <div class="content-wrapper"> {% endcomment %}
+        {% comment %} <div class="content-wrapper-before"></div> {% endcomment %}
+        <div class="content-header row">
+            <br>
+           <div class="col-md-10 col-lg-12">
+                
+            </div>
+            
+        </div>
+        
+        
+        <section>
+            <style>
+                .custom-iframe {
+                    width: 100%;
+                    height: 335px;
+                    border: 1px solid #ddd;
+                }
+            </style>
+            
+            {% comment %} {% load sweetify %} {% endcomment %}
+    {% comment %} {% sweetify %} {% endcomment %}
+            
+            <div id="approval_containers">
+                {% comment %} id="response-container" {% endcomment %}
+                
+                {% include "usecase_three/horizonbody.html" %}
+            </div>
+        </section>
+        
+    {% comment %} </div> {% endcomment %}
+</div>
+
+{% endblock %}

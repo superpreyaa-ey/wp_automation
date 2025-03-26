@@ -20,6 +20,7 @@
 <div class="card box-shadow-0 border-warning">
     {% comment %} <form method="post" action="{% url 'approval' %}" hx-post="{% url 'approval' %}" hx-trigger="submit" hx-target="#approval-container"> {% endcomment %}
         <form method="post" action="{% url 'approval' %}" hx-post="{% url 'approval_committee' %}" hx-trigger="submit" hx-target="#approval_container" onsubmit="showProgressBar()">
+        {% comment %} <form method="post" action="{% url 'approval' %}" hx-post="{% url 'approval_committee' %}" hx-trigger="submit" hx-target="#approval_container" onsubmit="showProgressBar()"> {% endcomment %}
             {% csrf_token %} 
          
         <div class="card-header">

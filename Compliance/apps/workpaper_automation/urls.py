@@ -7,7 +7,7 @@ urlpatterns = [
     # Define your app-specific routes here
     path('dashboard_workpaper/', views.dashboard_workpaper, name='dashboard_workpaper'),
     path('createauditwp/', views.createauditwp, name='createauditwp'),
-    path('approvalcommittee/', views.approval_committee, name='approval_committee'),
+    # path('approvalcommittee/', views.approval_committee, name='approval_committee'),
 
     path('approvalwp/', views.approvalwp, name='approvalwp'),
     path(r'^download_excel_wp/<str:pk_test>/', views.download_excel_wp, name='download_excel_wp'),

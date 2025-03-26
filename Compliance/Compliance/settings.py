@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apps.workpaper_automation',
     'django_celery_results',
     'celery_progress',
+    'apps.qa_audit',
 ]
 
 MIDDLEWARE = [

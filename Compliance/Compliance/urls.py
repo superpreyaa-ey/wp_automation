@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('apps.usermanagement.urls')),
     path('rag_pipline/', include('apps.rag_model.urls')),
     path('audit/',include('apps.audit_committee.urls')),
+    path('qa_audit/', include('apps.qa_audit.urls')),
     path('workpaper/',include('apps.workpaper_automation.urls')),
     path(r'^celery-progress/', include('celery_progress.urls')),
 ]

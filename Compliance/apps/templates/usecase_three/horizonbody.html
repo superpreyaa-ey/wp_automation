@@ -1,0 +1,201 @@
+
+{% load sweetify %}
+{% sweetify %} 
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/file-uploaders/dropzone.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/icheck/icheck.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'app-assets/vendors/css/forms/icheck/custom.css' %}">
+
+<link rel="stylesheet" type="text/css" href="{% static 'app-assets/css/plugins/file-uploaders/dropzone.css' %}">
+
+<div class="row">
+    
+    <div class="col-md-10 col-lg-6">  
+        <div class=" d-flex justify-content-between align-items-center">
+        
+            <!-- Title on the left  Audit commute -->
+            <h6 class="card-title warning bold mb-1">QA of Audit</h6>
+
+            {% comment %} <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                <label class="custom-control-label" for="customSwitch1"></label>
+            </div> {% endcomment %}
+            <!-- Add this somewhere in your template where the form is located -->
+            
+            
+        </div> 
+        <div class="card box-shadow-1 border-warning">
+        {% comment %} <div class="card "> {% endcomment %}
+            {% comment %} <div class="app-content content bg-hexagons"> {% endcomment %}
+           
+            <div class="card-header ">
+ 
+                <h4 class="card-title primary bold">CONFIGURATION</h4> 
+
+                {% comment %} <h4 class="card-title"><span class="badge badge-pill badge-info float-right m-0">1</span></h4> {% endcomment %}         
+                <div class="card-body">
+                    
+                    {% comment %} <div class="content-body row"></div> {% endcomment %}
+
+                    {% comment %} <form method="post" hx-post="{% url 'save_form_data' %}" hx-trigger="submit" hx-target="#message-container" enctype="multipart/form-data"> {% endcomment %}
+
+                    <form method="post" action="{% url 'create_qa_audit' %}" enctype="multipart/form-data" id="create-audit-form">
+                    {% comment %} <form method="post" hx-post="{% url 'create_audit' %}" hx-trigger="submit" hx-target="#approval-container" enctype="multipart/form-data" id="create-audit-form"> {% endcomment %}
+
+                            {% csrf_token %}
+                        <!-- Hidden input for the feature -->
+                        <input type="hidden" name="feature" value="QA of Audit">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select id="companyinput5" name="audit_year" class="form-control">
+                                            <option value="none" selected="" disabled="">--Select Audit Period--</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        
+                                        <input type="text" name="audit_name" id="roundText" class="form-control round" placeholder="Audit name">
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <div >
+                                        <span class="info"> Upload the file in zip format</span>
+                                    </div>
+
+                                    <div class="custom-file">
+                                        
+                                        <input type="file" name="file" class="custom-file-input" id="inputGroupFile01">
+                                        <label class="custom-file-label" for="inputGroupFile01">Choose file.....</label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="form-actions right">
+                                <button type="button" class="btn btn-sm btn-danger box-shadow-2 round btn-min-width  mr-1">
+                                    <i class="ft-x"></i> Cancel
+                                </button>
+                                <button type="submit"id="create-audit-submit" class="btn btn-sm btn-primary box-shadow-2 round btn-min-width pull-right">
+                                     Save
+                                </button>
+                            </div>
+                            
+                        </div>
+                    </form>
+                                                
+                    {% comment %} <h5>RBI Regulator Information </h5> {% endcomment %}
+                    <br>
+                    {% comment %} <div id="message-container"></div> {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-10 col-lg-6">
+        {% include "usecase_three/iframe.html" %}
+        
+    </div>
+
+    <br>
+</div> 
+
+<div class="row">
+
+    <div class="col-md-10 col-lg-12">
+        {% include "usecase_three/Audit_trail.html" %}
+
+    </div>
+            
+</div>
+
+
+<script>
+    
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var createAuditForm = document.getElementById('create-audit-form'); // Add an ID to your form for this to work
+
+        createAuditForm.addEventListener('submit', function(event) {
+            var fileInput = document.getElementById('inputGroupFile01');
+            if (fileInput && fileInput.required && fileInput.offsetParent === null) {
+                // If the input is required and not visible, prevent form submission and display an error or make the input visible
+                event.preventDefault();
+                alert('Please attach the required file.');
+                // Optionally, make the input visible
+                // fileInput.style.display = 'block';
+            }
+        });
+    });
+</script>
+
+<!-- JavaScript to handle the progress bar -->
+<script>
+function startDummyProgress() {
+    var elem = document.getElementById("progressBar");
+    var width = 0;
+    var id = setInterval(frame, 1000); // Update every 300ms
+    
+
+    function frame() {
+        if (width >= 100) {
+            clearInterval(id);
+            // Optionally, you can redirect or perform another action after the progress bar completes
+            // window.location.href = "/some/redirect/url";
+        } else {
+            width++;
+            elem.style.width = width + '%';
+            elem.textContent = width + '%';
+        }
+    }
+}
+
+function showProgressBar() {
+    document.getElementById("progressBarContainer").style.display = "block";
+    startDummyProgress();
+}
+</script>
+<script src="{% static 'app-assets/vendors/js/forms/icheck/icheck.min.js' %}" type="text/javascript"></script>
+<!-- END: Page Vendor JS-->
+
+<!-- BEGIN: Page JS-->
+<script src="{% static 'app-assets/vendors/js/forms/tags/form-field.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/js/scripts/forms/custom-file-input.js' %}"></script>
+    
+{% comment %} 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var workPaperCheckbox = document.getElementById('work_paper_checkbox');
+        var issueCheckbox = document.getElementById('issue_checkbox');
+        var nextButton = document.querySelector('.next-button');
+    
+        function updateNextButtonHref() {
+            var href = nextButton.getAttribute('href');
+            var params = new URLSearchParams(href.split('?')[1] || '');
+            params.delete('wp');
+            params.delete('is');
+    
+            if (workPaperCheckbox.checked) {
+                params.append('wp', 'wp');
+            }
+            if (issueCheckbox.checked) {
+                params.append('is', 'is');
+            }
+    
+            nextButton.setAttribute('href', '?' + params.toString());
+        }
+    
+        workPaperCheckbox.addEventListener('change', updateNextButtonHref);
+        issueCheckbox.addEventListener('change', updateNextButtonHref);
+    });
+</script> {% endcomment %}
+{% comment %} sharline or step {% endcomment %}

@@ -130,8 +130,8 @@ def createaudit(request):
             
             if extracted_folder_path: 
                 attached_folder, attached_folder_created = audit_attached_folder(audit,entityname, extracted_folder_path, flag)
-                create_document_entries(extracted_folder_path, audit,preprocess_path,flag) 
-                time.sleep(180)
+                create_document_entries(extracted_folder_path, audit,preprocess_path,flag,control_name=None) 
+                time.sleep(10)
         page = request.GET.get('page', 1)
         if feature == None:
             feature = request.GET.get('feature', None)
@@ -338,7 +338,7 @@ def approval_committee(request):
     cust = request.user
     if request.method == 'POST':
         audit_id = request.POST.getlist('check[]')
-        
+
         audit_id = audit_id[0]
         org_audit = Audit.objects.get(id=audit_id)
         outputpath = org_audit.out_putpath
@@ -348,8 +348,8 @@ def approval_committee(request):
         print(f" collection of id of {cust} {audit_id}")
         s1 = 'Audit Report'
         feature = 'Audit Committee Summary Report Drafter'
-
-        isaudit,isissue,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
+        
+        is_audit,is_issue,meeting_type,control_name,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
         
         if documents:
             # Set up pagination for documents
@@ -445,7 +445,7 @@ def approval_committee(request):
                     org_audit.save()
             else:
                 pass
-            time.sleep(180)
+            time.sleep(90)
             audits = Audit.objects.filter(created_by = request.user,feature_request=feature,is_active=True).order_by('-id') 
             context = {
                 'audits': audits,

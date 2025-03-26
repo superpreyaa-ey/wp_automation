@@ -1,0 +1,122 @@
+
+{% load static %}
+
+
+
+<!-- END: Page CSS-->
+
+<!-- BEGIN: Custom CSS-->
+<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+<div class="modal-body">
+    <div class="card box-shadow-1">
+        <div class="card-body pl-0 pr-0">
+            <div class="card-header">
+                <h6 class="modal-title" id="myModalLabel17">{{ currentsheet }}</h6>
+                <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+                <div class="heading-elements">
+                    <ul class="list-inline mb-0">
+                        
+                        
+                        {% for sheet_name in Sheet %}
+                
+                            <li class="nav-link  id="base-tab1" data-toggle="tab" aria-controls="tab1" href="#tab1" aria-expanded="false"">
+                                    
+                                <a href="#"
+                                class="{{ forloop.counter0|add:"1"|default:"default-class" }}"
+                                hx-get="{% url 'sheet_request' %}"
+                                hx-vals='{"feature": "QA of Audit", "doc_name": "{{ currentdocument.out_putpath }}", "Sheet": "{{ sheet_name }}"}'
+                                hx-trigger="click"
+                                hx-target="#sheet-cntr">
+                                {{ sheet_name }}
+                                </a>
+                            </li>
+                            
+                        {% empty %}
+                            <li>No sheets available</li>
+                        {% endfor %}
+                        <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="todays-tasks">
+                <div class="table-responsqa">
+                    <table class="table table-padded mb-0" id="recent-buyer-table">
+                        <thead class="bg-primary white">
+                        
+                            <tr>
+                                {% if d_lst %}
+                                    {% for header in d_lst.0.keys %}
+                                        <th class="my-th">{{ header }}</th>
+                                    {% endfor %}
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if d_lst %}
+                                {% for item in d_lst %}
+                                    <tr>
+                                        {% for value in item.values %}
+                                            <td class="my-td">
+                                                {% if value|length > 150 %}
+                                                    {{ value|slice:":150" }} 
+                                                {% else %}
+                                                    {{ value }}
+                                                {% endif %}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="X">No data available</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set initial active state based on URL or other conditions
+        const currentSheet = "{{ current_sheet|default:'' }}";  // Pass current sheet to template
+        if (currentSheet) {
+            document.querySelector(`.sheet-link[data-sheet-name="${currentSheet}"]`).classList.add('active');
+        }
+    
+        // Add click event listener to all sheet links
+        document.querySelectorAll('.sheet-link').forEach(function(link) {
+            link.addEventListener('click', function() {
+                // Remove active class from all links
+                document.querySelectorAll('.sheet-link').forEach(function(link) {
+                    link.classList.remove('active');
+                });
+    
+                // Add active class to the clicked link
+                this.classList.add('active');
+            });
+        });
+    });
+    </script>
+
+
+<!-- BEGIN: Vendor JS-->
+<script src="{% static 'app-assets/vendors/js/vendors.min.js' %}" type="text/javascript"></script>
+<!-- BEGIN Vendor JS-->
+
+<!-- BEGIN: Page Vendor JS-->
+<script type="text/javascript" src="{% static 'app-assets/vendors/js/ui/jquery.sticky.js' %}"></script>
+<script src="{% static 'app-assets/vendors/js/tables/datatable/datatables.min.js' %}" type="text/javascript"></script>
+<!-- END: Page Vendor JS-->
+
+<!-- BEGIN: Theme JS-->
+<script src="{% static 'app-assets/js/core/app-menu.js' %}" type="text/javascript"></script>
+<script src="{% static 'app-assets/js/core/app.js' %}" type="text/javascript"></script>
+<!-- END: Theme JS-->
+
+<!-- BEGIN: Page JS-->
+<script src="{% static 'app-assets/js/scripts/tables/datatables/datatable-basic.js' %}" type="text/javascript"></script>
+<!-- END: Page JS-->

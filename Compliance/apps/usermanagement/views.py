@@ -115,7 +115,7 @@ def get_latest_audit_and_documents(request,feature):
         first_attached_folder = None
         meeting_type = None
         control_name = None
-
+    
     print("control name=============================",control_name)
     # You can now return these objects, use them to render a template, or pass them to the context
     return is_audit,is_issue,meeting_type,control_name,first_attached_folder,latest_audit, documents
@@ -265,7 +265,6 @@ def index(request):
         return render(request, template_name, context)
     
     # Workpaper Automation Start
-
     elif feature == 'Workpaper Automation':
         print("inside Workpaper Automation if=========1==========")
         try:
@@ -294,6 +293,27 @@ def index(request):
 
         return render(request, template_name, context)
     
+    elif feature == 'QA of Audit':
+        if 'HX-Request' in request.headers:
+            
+            template_name = 'usecase_three/iframe.html'
+
+        else:
+            # Render the full page for a normal request
+            current_document= None
+            template_name = 'usecase_three/dashboard.html'
+
+        context = {
+            'audits': audits,
+            'current_document': current_document,
+            'data_list': data_list,
+            'final_report': None,
+            'get_audit_name':None,
+        }
+
+        return render(request, template_name, context)
+    else:
+        return redirect('landing_page')
 
 
 

@@ -418,139 +418,139 @@ def convert_pptx_to_pdf(pptx_path, output_pdf_path):
         pythoncom.CoUninitialize()
 
 
-@csrf_exempt
-def approval_committee(request):
-    cust = request.user
-    if request.method == 'POST':
-        audit_id = request.POST.getlist('check[]')
+# @csrf_exempt
+# def approval_committee(request):
+#     cust = request.user
+#     if request.method == 'POST':
+#         audit_id = request.POST.getlist('check[]')
         
-        audit_id = audit_id[0]
-        org_audit = Audit.objects.get(id=audit_id)
-        outputpath = org_audit.out_putpath
+#         audit_id = audit_id[0]
+#         org_audit = Audit.objects.get(id=audit_id)
+#         outputpath = org_audit.out_putpath
 
-        final_outputpath =  '/' + outputpath.replace('\\', '/')
-        is_external_client = False
-        print(f" collection of id of {cust} {audit_id}")
-        s1 = 'Audit Report'
-        feature = 'Audit Committee Summary Report Drafter'
+#         final_outputpath =  '/' + outputpath.replace('\\', '/')
+#         is_external_client = False
+#         print(f" collection of id of {cust} {audit_id}")
+#         s1 = 'Audit Report'
+#         feature = 'Audit Committee Summary Report Drafter'
 
-        isaudit,isissue,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
+#         is_audit,is_issue,meeting_type,control_name,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
         
-        if documents:
-            # Set up pagination for documents
-            page = request.GET.get('page', 1)
-            # if feature == None:
-            #     feature = request.GET.get('feature', None)
-            # else:
-            #     pass
-            paginator = Paginator(documents, 1)  # Show 1 document per page
+#         if documents:
+#             # Set up pagination for documents
+#             page = request.GET.get('page', 1)
+#             # if feature == None:
+#             #     feature = request.GET.get('feature', None)
+#             # else:
+#             #     pass
+#             paginator = Paginator(documents, 1)  # Show 1 document per page
 
-            try:
-                page_number = int(page)
-                if page_number < 1:
-                    raise Http404("Page number is less than 1")
-                current_document = paginator.page(page_number)
-            except (ValueError, TypeError):
-                current_document = paginator.page(1)
-            except PageNotAnInteger:
-                current_document = paginator.page(1)
-            except EmptyPage:
-                current_document = paginator.page(paginator.num_pages)
+#             try:
+#                 page_number = int(page)
+#                 if page_number < 1:
+#                     raise Http404("Page number is less than 1")
+#                 current_document = paginator.page(page_number)
+#             except (ValueError, TypeError):
+#                 current_document = paginator.page(1)
+#             except PageNotAnInteger:
+#                 current_document = paginator.page(1)
+#             except EmptyPage:
+#                 current_document = paginator.page(paginator.num_pages)
 
 
-            file_type = current_document.object_list[0].file_type
-            file_path = current_document.object_list[0].input_path
-            get_base_path = os.getcwd() + file_path
-            absolute_file_path = os.path.abspath(get_base_path)
+#             file_type = current_document.object_list[0].file_type
+#             file_path = current_document.object_list[0].input_path
+#             get_base_path = os.getcwd() + file_path
+#             absolute_file_path = os.path.abspath(get_base_path)
             
-            if file_type in ['.xls', '.xlsx']:
-                print('Extracting data from Excel file...')
-                df = pd.read_excel(absolute_file_path)
-                data_list = df.to_dict(orient='records')
-            elif file_type == '.csv' or file_type == '.CSV':
-                print('Extracting data from CSV file...')
-                df = pd.read_csv(absolute_file_path)
-                data_list = df.to_dict(orient='records')
-            else:
-                df = None
-                data_list = None
-                pass
+#             if file_type in ['.xls', '.xlsx']:
+#                 print('Extracting data from Excel file...')
+#                 df = pd.read_excel(absolute_file_path)
+#                 data_list = df.to_dict(orient='records')
+#             elif file_type == '.csv' or file_type == '.CSV':
+#                 print('Extracting data from CSV file...')
+#                 df = pd.read_csv(absolute_file_path)
+#                 data_list = df.to_dict(orient='records')
+#             else:
+#                 df = None
+#                 data_list = None
+#                 pass
             
-            msg = f"Report Generated Successfully" 
-            args1 = dict(title=msg, icon='success', timer=9000,timerProgressBar='true', button="OK")
+#             msg = f"Report Generated Successfully" 
+#             args1 = dict(title=msg, icon='success', timer=9000,timerProgressBar='true', button="OK")
             
-            if is_external_client == True:
-                """ demo """
-                # Aditya_birla\TXT
-                different_client = 'static\\media\\Test\\Aditya_birla\\Internal_Audit_Report.docx'
-                """ Orginal """
+#             if is_external_client == True:
+#                 """ demo """
+#                 # Aditya_birla\TXT
+#                 different_client = 'static\\media\\Test\\Aditya_birla\\Internal_Audit_Report.docx'
+#                 """ Orginal """
                 
-                # get_base_path = os.getcwd() + different_client
-                # print(">>>> path ",different_client)
-                absolute_file_path = os.path.abspath(different_client)
-                absolute_pdf_file_path = os.path.abspath(outputpath)
+#                 # get_base_path = os.getcwd() + different_client
+#                 # print(">>>> path ",different_client)
+#                 absolute_file_path = os.path.abspath(different_client)
+#                 absolute_pdf_file_path = os.path.abspath(outputpath)
 
-                converted = convert_word_to_pdf(absolute_file_path, absolute_pdf_file_path +'\\'+'Internal_Audit_Report.pdf') 
-                if converted == True:
-                    shutil.copy(absolute_file_path, absolute_pdf_file_path)
-                    print(f"File {file_path} copied to {absolute_pdf_file_path}")
-                else:
-                    pass
+#                 converted = convert_word_to_pdf(absolute_file_path, absolute_pdf_file_path +'\\'+'Internal_Audit_Report.pdf') 
+#                 if converted == True:
+#                     shutil.copy(absolute_file_path, absolute_pdf_file_path)
+#                     print(f"File {file_path} copied to {absolute_pdf_file_path}")
+#                 else:
+#                     pass
                 
-            sweetify.multiple(request, args1)
+#             sweetify.multiple(request, args1)
             
-            # c:\Users\WH966TA\Downloads\Sample AC report.pptx
-            if documents[0].file_type == '.txt':
-                use_case_2 = 'static\\media\\Test\\USE_CASE2\\TXT\\Internal_Audit_Report.pptx'
-            else:
-                use_case_2 = 'static\\media\\Test\\USE_CASE2\\Internal_Audit_Report.pptx'
-            # use_case_2 = 'static\\media\\Test\\Orignal\\Use_Case2\\Internal_Audit_Report.pptx'
-            # use_case_2 = 'static\\media\\Test\\USE_CASE2\\Internal_Audit_Report.pptx'
+#             # c:\Users\WH966TA\Downloads\Sample AC report.pptx
+#             if documents[0].file_type == '.txt':
+#                 use_case_2 = 'static\\media\\Test\\USE_CASE2\\TXT\\Internal_Audit_Report.pptx'
+#             else:
+#                 use_case_2 = 'static\\media\\Test\\USE_CASE2\\Internal_Audit_Report.pptx'
+#             # use_case_2 = 'static\\media\\Test\\Orignal\\Use_Case2\\Internal_Audit_Report.pptx'
+#             # use_case_2 = 'static\\media\\Test\\USE_CASE2\\Internal_Audit_Report.pptx'
 
-            try:
-                # Get absolute file paths
-                absolute_file_path = os.path.abspath(use_case_2)
-                absolute_pdf_file_path = os.path.abspath(outputpath)
+#             try:
+#                 # Get absolute file paths
+#                 absolute_file_path = os.path.abspath(use_case_2)
+#                 absolute_pdf_file_path = os.path.abspath(outputpath)
                 
-                # Convert PPTX to PDF
-                convert_pptx_to_pdf(absolute_file_path, absolute_pdf_file_path+'\\'+'Internal_Audit_Report.pdf')
+#                 # Convert PPTX to PDF
+#                 convert_pptx_to_pdf(absolute_file_path, absolute_pdf_file_path+'\\'+'Internal_Audit_Report.pdf')
 
-            except Exception as e:
-                print(f"An error occurred: {e}")
-            absolute_file_path = os.path.abspath(use_case_2)
-            absolute_pdf_file_path = os.path.abspath(outputpath)
-            print(f"Output_path >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>{absolute_pdf_file_path}")
+#             except Exception as e:
+#                 print(f"An error occurred: {e}")
+#             absolute_file_path = os.path.abspath(use_case_2)
+#             absolute_pdf_file_path = os.path.abspath(outputpath)
+#             print(f"Output_path >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>{absolute_pdf_file_path}")
 
-            if org_audit.progress != 100:
-                with transaction.atomic():
-                    org_audit.progress = 100
-                    org_audit.audit_status = 'Committee Report Completed'
-                    org_audit.out_putpath = final_outputpath + '/'+'Internal_Audit_Report.pdf'
-                    org_audit.uploaded_at =datetime.datetime.now()
-                    org_audit.save()
-            else:
-                pass
-            time.sleep(180)
-            audits = Audit.objects.filter(created_by = request.user,feature_request=feature,is_active=True).order_by('-id') 
-            context = {
-                'audits': audits,
-                'current_document': current_document,#current_document.object_list[0].input_path,
-                'data_list': data_list,
-                'final_report': final_outputpath + '/'+'Internal_Audit_Report.pdf'
-            }
+#             if org_audit.progress != 100:
+#                 with transaction.atomic():
+#                     org_audit.progress = 100
+#                     org_audit.audit_status = 'Committee Report Completed'
+#                     org_audit.out_putpath = final_outputpath + '/'+'Internal_Audit_Report.pdf'
+#                     org_audit.uploaded_at =datetime.datetime.now()
+#                     org_audit.save()
+#             else:
+#                 pass
+#             time.sleep(90)
+#             audits = Audit.objects.filter(created_by = request.user,feature_request=feature,is_active=True).order_by('-id') 
+#             context = {
+#                 'audits': audits,
+#                 'current_document': current_document,#current_document.object_list[0].input_path,
+#                 'data_list': data_list,
+#                 'final_report': final_outputpath + '/'+'Internal_Audit_Report.pdf'
+#             }
             
         
-            return render(request, 'usecase_two/horizonbody.html',context)
-            # return redirect('HomeView')
-        else:
-            messages.success(request, ("You aren't authorized to view this page!"))
-            # return redirect('HomeView')
-            context ={
-                'pdf_viewer':'sorted_outpath',
+#             return render(request, 'usecase_workpaper/horizonbody.html',context)
+#             # return redirect('HomeView')
+#         else:
+#             messages.success(request, ("You aren't authorized to view this page!"))
+#             # return redirect('HomeView')
+#             context ={
+#                 'pdf_viewer':'sorted_outpath',
 
-                'Regulator':audits.audit_status if audits.audit_status else None
-            }
-            return render(request, 'usecase_two/horizonbody.html',context)
+#                 'Regulator':audits.audit_status if audits.audit_status else None
+#             }
+#             return render(request, 'usecase_workpaper/horizonbody.html',context)
         
 def is_pdf(file_path):
     # Check if the file has a '.pdf' extension
@@ -665,7 +665,7 @@ def approvalwp(request):
                 else:
                     pass
                 
-            # time.sleep(23)
+            time.sleep(30)
             sweetify.multiple(request, args1)
             
             audits = Audit.objects.filter(created_by = request.user,feature_request=feature,is_active=True).order_by('-id') 

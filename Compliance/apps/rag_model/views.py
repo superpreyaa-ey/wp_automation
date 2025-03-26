@@ -204,7 +204,6 @@ def create_document_entries(extracted_folder_path, audit, preprocess_path,flag,c
 
         # Keep track of the number of processed files
         processed_files = 1
-
         # Iterate over the extracted files and create a database entry for each
         for root, dirs, files in os.walk(extracted_folder_path):
             for file in files:
@@ -338,7 +337,8 @@ def all_audit(request):
 
 
         
-from apps.rag_model.STRUCTURE_OUTPUT.data_preprocessing import vaidate_wp_is_main        
+from apps.rag_model.STRUCTURE_OUTPUT.data_preprocessing import vaidate_wp_is_main      
+  
 def create_audit(request):
     feature = None
     sheet_names =None
@@ -346,11 +346,11 @@ def create_audit(request):
         audit_name = request.POST.get('audit_name')
         audit_year = request.POST.get('audit_year')
         feature = request.POST.get('feature', None)
-        # files = request.FILES.getlist('folder')
+        flag = request.POST.get('meeting_type', None)
+        control_name = request.POST.get('control_name',None)
         print(f"Feature Requested >>>>>>>>>>>>>>>>> : {feature}")
         files = request.FILES.getlist('file')
-        # flag = request.POST.get('fileType')
-        flag = None
+
         # for excel
         print(files)
         
@@ -370,7 +370,6 @@ def create_audit(request):
         final_output_path = os.path.join('static','media','project_files','audit_check_files',request_user ,feature, folder_name,'Process_Output')
         # output_path = audit.out_putpath 
         print(f"Folder path: {folder_path}")
-
         os.makedirs(folder_path, exist_ok=True)
         os.makedirs(preprocess_path, exist_ok=True)
         os.makedirs(final_output_path, exist_ok=True)
@@ -385,10 +384,11 @@ def create_audit(request):
             extracted_folder_path = unzip_files(entityname, audit,flag,feature)
             # Save the filename to the database
             
-            if extracted_folder_path:     
+            if extracted_folder_path:    
+
                 attached_folder = AttachedFolder.objects.create(folder_name=entityname, audit_id=audit)
                 
-                create_document_entries(extracted_folder_path, audit,preprocess_path) 
+                create_document_entries(extracted_folder_path, audit,preprocess_path,flag,control_name) 
                 """ need to update progress"""
                 try:
                     results = categorize_excel_files(extracted_folder_path,audit)
@@ -626,8 +626,7 @@ def approval(request):
         s1 = 'Audit Report'
         feature = 'Audit Report Drafter'
 
-        isaudit,isissue,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
-
+        is_audit,is_issue,meeting_type,control_name,first_attached_folder,latest_audit, documents = get_latest_audit_and_documents(request,feature)
         if documents:
             # Set up pagination for documents
             page = request.GET.get('page', 1)
